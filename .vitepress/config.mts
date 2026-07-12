@@ -106,6 +106,7 @@ export default defineConfig({
             { text: '统一响应格式', link: '/backend/09-api-response' },
             { text: '认证机制', link: '/backend/10-api-authentication' },
             { text: '接口清单', link: '/backend/11-api-endpoints' },
+            { text: 'API 版本控制', link: '/backend/12-api-versioning' },
           ],
         },
       ],
