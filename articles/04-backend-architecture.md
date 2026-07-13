@@ -88,36 +88,33 @@ public async Task<UserEntity?> GetByEmailAsync(string email)
 
 Chet.Admin 后端采用 **Clean Architecture**，分为四层：
 
-```
-┌──────────────────────────────────────────────────────┐
-│                  表示层（API Layer）                  │
-│  Controllers / Middleware / Filters / Configurations │
-│  职责：HTTP 路由、参数校验、响应格式化                 │
-└──────────────────────┬───────────────────────────────┘
-                       │ 调用
-┌──────────────────────▼───────────────────────────────┐
-│                  应用层（Application Layer）          │
-│  Services / DTOs / Mapping / Validators              │
-│  职责：业务逻辑编排、对象映射、参数校验               │
-└──────────────────────┬───────────────────────────────┘
-                       │ 依赖抽象
-┌──────────────────────▼───────────────────────────────┐
-│                核心层（Core Layer）⭐                │
-│  Domain（实体）/ Contracts（接口）/ Shared（工具）   │
-│  职责：定义领域模型和契约，不依赖任何其他层           │
-└──────────────────────▲───────────────────────────────┘
-                       │ 实现接口
-┌──────────────────────┴───────────────────────────────┐
-│              基础设施层（Infrastructure Layer）       │
-│  Data（EF Core）/ Caching / Configuration / Logging │
-│  职责：技术实现，实现 Core 定义的接口                │
-└──────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph L1["表示层（API Layer）"]
+        L1C["Controllers / Middleware / Filters / Configurations<br/>职责：HTTP 路由、参数校验、响应格式化"]
+    end
+    subgraph L2["应用层（Application Layer）"]
+        L2C["Services / DTOs / Mapping / Validators<br/>职责：业务逻辑编排、对象映射、参数校验"]
+    end
+    subgraph L3["核心层（Core Layer）⭐"]
+        L3C["Domain（实体）/ Contracts（接口）/ Shared（工具）<br/>职责：定义领域模型和契约，不依赖任何其他层"]
+    end
+    subgraph L4["基础设施层（Infrastructure Layer）"]
+        L4C["Data（EF Core）/ Caching / Configuration / Logging<br/>职责：技术实现，实现 Core 定义的接口"]
+    end
+
+    L1 -->|调用| L2
+    L2 -->|依赖抽象| L3
+    L4 -->|实现接口| L3
 ```
 
 ### 依赖方向原则
 
-```
-Api ──▶ Application ──▶ Core ◀── Infrastructure
+```mermaid
+flowchart LR
+    Api["Api"] --> Application["Application"]
+    Application --> Core["Core"]
+    Infrastructure["Infrastructure"] --> Core
 ```
 
 - **依赖方向始终向内**指向 Core
@@ -661,10 +658,19 @@ public class UserRepository : EfCoreRepository<UserEntity>, IUserRepository
 
 ### 继承体系
 
-```
-IRepository<T>              （接口 - 定义契约）
-    └── EfCoreRepository<T> （抽象实现 - 通用 CRUD）
-            └── UserRepository  （具体实现 - 用户特定查询）
+```mermaid
+classDiagram
+    class IRepository~T~ {
+        <<interface 接口 - 定义契约>>
+    }
+    class EfCoreRepository~T~ {
+        <<abstract 抽象实现 - 通用 CRUD>>
+    }
+    class UserRepository {
+        具体实现 - 用户特定查询
+    }
+    IRepository~T~ <|.. EfCoreRepository~T~
+    EfCoreRepository~T~ <|-- UserRepository
 ```
 
 ### 何时用泛型？何时写具体仓储？

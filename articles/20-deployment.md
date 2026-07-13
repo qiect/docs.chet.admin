@@ -23,31 +23,29 @@
 
 部署完成后的架构：
 
-```
-                    ┌──────────────────────────┐
-                    │       用户浏览器          │
-                    └────────────┬─────────────┘
-                                 │ HTTPS (443)
-                                 ▼
-                    ┌──────────────────────────┐
-                    │        Nginx             │
-                    │   (反向代理 + 静态文件)  │
-                    └─────┬──────────────┬────┘
-                          │              │
-                  /api    │              │  /
-                          ▼              ▼
-            ┌──────────────────┐  ┌──────────────────┐
-            │  Chet.Admin API │  │   前端静态资源    │
-            │  (Docker 容器)  │  │  (/usr/share/nginx)│
-            │  :8080          │  │                   │
-            └────┬─────────┬───┘  └──────────────────┘
-                 │         │
-       SQLite    │         │  Redis (可选)
-   /data/*.db    │         │  :6379
-                 ▼         ▼
-            ┌────────┐  ┌────────────┐
-            │  数据   │  │   缓存     │
-            └────────┘  └────────────┘
+```mermaid
+flowchart TB
+    User["用户浏览器"]
+
+    subgraph Nginx["Nginx（反向代理 + 静态文件）"]
+        direction TB
+        NginxEntry[" "]
+    end
+
+    subgraph API["Chet.Admin API（Docker 容器）<br/>:8080"]
+        direction TB
+        APIEntry[" "]
+    end
+
+    Static["前端静态资源<br/>/usr/share/nginx/html"]
+    SQLite["SQLite<br/>/data/*.db"]
+    Redis["Redis 可选<br/>:6379"]
+
+    User -->|HTTPS 443| Nginx
+    Nginx -->|/api| API
+    Nginx -->|/| Static
+    API --> SQLite
+    API -.->|可选| Redis
 ```
 
 **关键设计**：

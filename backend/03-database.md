@@ -14,20 +14,18 @@
 
 系统核心是 RBAC（基于角色的访问控制）模型：
 
-```
-用户(User) ──N:N── 用户角色(UserRole) ──N:N── 角色(Role)
-                                                  │
-                            ┌─────────────────────┴─────────────────────┐
-                            ▼                                           ▼
-                     角色菜单(RoleMenu)                  角色数据权限部门(RoleDataScopeDept)
-                            │                                           │
-                            ▼                                           ▼
-                       菜单(Menu)                                    部门(Department)
-
-用户(User) ──N:1── 部门(Department)
-菜单(Menu) ──N:1── 菜单(Menu)（ParentId 自关联，树形结构）
-部门(Department) ──N:1── 部门（ParentId 自关联，树形结构）
-字典(Dictionary) ──N:1── 字典（ParentId 自关联，类型 + 字典项）
+```mermaid
+erDiagram
+    Users ||--o{ UserRoles : "N:N"
+    Roles ||--o{ UserRoles : "N:N"
+    Roles ||--o{ RoleMenus : "N:N"
+    Menus ||--o{ RoleMenus : "N:N"
+    Roles ||--o{ RoleDataScopeDepts : "1:N"
+    Departments ||--o{ RoleDataScopeDepts : "N:N"
+    Departments ||--o{ Users : "1:N"
+    Menus ||--o{ Menus : "ParentId 自关联"
+    Departments ||--o{ Departments : "ParentId 自关联"
+    Dictionaries ||--o{ Dictionaries : "ParentId 自关联"
 ```
 
 ### 关系说明
@@ -39,38 +37,61 @@
 
 ## 3. 实体 ER 图
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  Users       │     │  UserRoles   │     │  Roles       │
-├──────────────┤     ├──────────────┤     ├──────────────┤
-│ Id (PK)      │◄──┐ │ UserId (FK)  │ ┌──►│ Id (PK)      │
-│ Name         │   └─│ RoleId (FK)  │─┘   │ Code         │
-│ Email (UQ)   │     └──────────────┘     │ Name         │
-│ PasswordHash │                          │ DataScope    │
-│ RefreshToken │     ┌──────────────┐     │ IsEnabled    │
-│ DepartmentId │◄──┐ │ RoleMenus    │     └──────────────┘
-│ LoginFailCnt │   │ │ RoleId (FK)  │
-│ LockedUntil  │   │ │ MenuId (FK)  │
-└──────┬───────┘   │ └──────┬───────┘
-       │           │        │
-       │           │        ▼
-       │           │ ┌──────────────┐
-       │           │ │  Menus       │
-       │           │ ├──────────────┤
-       │           └►│ Id (PK)      │
-       │             │ ParentId     │
-       │             │ Path/Icon    │
-       │             │ Type/Sort    │
-       │             └──────────────┘
-       ▼
-┌──────────────┐
-│ Departments  │
-├──────────────┤     ┌──────────────┐
-│ Id (PK)      │     │ RoleDataScope│
-│ ParentId     │     ├──────────────┤
-│ Name/Code    │     │ RoleId (FK)  │
-│ Leader       │     │ DeptId (FK)  │
-└──────────────┘     └──────────────┘
+```mermaid
+erDiagram
+    Users {
+        int Id PK
+        string Name
+        string Email UQ
+        string PasswordHash
+        string RefreshToken
+        int DepartmentId FK
+        int LoginFailCount
+        datetime LockedUntil
+    }
+    Roles {
+        int Id PK
+        string Code
+        string Name
+        string DataScope
+        bool IsEnabled
+    }
+    UserRoles {
+        int UserId PK,FK
+        int RoleId PK,FK
+    }
+    Menus {
+        int Id PK
+        int ParentId
+        string Path
+        string Icon
+        string Type
+        int Sort
+    }
+    RoleMenus {
+        int RoleId PK,FK
+        int MenuId PK,FK
+    }
+    Departments {
+        int Id PK
+        int ParentId
+        string Name
+        string Code
+        string Leader
+    }
+    RoleDataScopeDepts {
+        int Id PK
+        int RoleId FK
+        int DepartmentId FK
+    }
+
+    Users ||--o{ UserRoles : "UserId"
+    Roles ||--o{ UserRoles : "RoleId"
+    Roles ||--o{ RoleMenus : "RoleId"
+    Menus ||--o{ RoleMenus : "MenuId"
+    Departments ||--o{ Users : "DepartmentId"
+    Roles ||--o{ RoleDataScopeDepts : "RoleId"
+    Departments ||--o{ RoleDataScopeDepts : "DepartmentId"
 ```
 
 ## 4. 数据表结构

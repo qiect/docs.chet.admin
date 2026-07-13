@@ -633,30 +633,28 @@ public class UsersController : ControllerBase
 
 把三层串起来看一个完整请求：
 
-```
-用户点击"删除用户"按钮
-         ↓
-┌─────────────────────────────────────┐
-│ 第一层：菜单级（路由守卫）              │
-│ - 用户能不能进 /system/user 页面？       │
-│ - 看后端返回的菜单树里有没有这条         │
-└─────────────────────────────────────┘
-         ↓ 通过
-┌─────────────────────────────────────┐
-│ 第二层：按钮级（v-access 指令）          │
-│ - 删除按钮的 auth='system:user:delete' │
-│ - 查 accessStore.accessCodes 里有没有   │
-│ - 没有就从 DOM 移除                     │
-└─────────────────────────────────────┘
-         ↓ 用户点了按钮
-┌─────────────────────────────────────┐
-│ 第三层：行级（数据权限）                │
-│ - DELETE /api/v1/users/5             │
-│ - 后端校验：用户能否操作 ID=5 的用户？    │
-│ - 检查 dataScope 和部门归属             │
-└─────────────────────────────────────┘
-         ↓ 通过
-       执行删除 ✅
+```mermaid
+flowchart TB
+    Start["用户点击 删除用户 按钮"]
+
+    subgraph L1["第一层：菜单级（路由守卫）"]
+        L1A["用户能不能进 /system/user 页面?<br/>看后端返回的菜单树里有没有这条"]
+    end
+
+    subgraph L2["第二层：按钮级（v-access 指令）"]
+        L2A["删除按钮的 auth=system:user:delete<br/>查 accessStore.accessCodes 里有没有<br/>没有就从 DOM 移除"]
+    end
+
+    subgraph L3["第三层：行级（数据权限）"]
+        L3A["DELETE /api/v1/users/5<br/>后端校验：用户能否操作 ID=5 的用户?<br/>检查 dataScope 和部门归属"]
+    end
+
+    Success["执行删除 ✅"]
+
+    Start --> L1
+    L1 -->|通过| L2
+    L2 -->|用户点了按钮| L3
+    L3 -->|通过| Success
 ```
 
 ---

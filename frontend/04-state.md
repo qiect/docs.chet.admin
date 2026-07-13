@@ -97,11 +97,13 @@ export const useAuthStore = defineStore('auth', () => {
 
 ### 3.2 驱动关系
 
-```text
-accessStore.accessCodes ──→ hasAccessByCodes（按钮权限）
-accessStore.accessRoutes ──→ router 动态添加
-accessStore.accessMenus  ──→ 侧边栏菜单渲染
-accessStore.accessToken  ──→ 请求拦截器 / 路由守卫
+```mermaid
+flowchart LR
+    Codes["accessStore.accessCodes"] -->|按钮权限| HasAccess["hasAccessByCodes"]
+    Routes["accessStore.accessRoutes"] -->|动态添加| Router["router"]
+    Menus["accessStore.accessMenus"] -->|渲染| Sidebar["侧边栏菜单"]
+    Token["accessStore.accessToken"] -->|注入| Interceptor["请求拦截器"]
+    Token -->|校验| Guard["路由守卫"]
 ```
 
 ## 4. 偏好设置（preferences）

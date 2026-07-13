@@ -4,38 +4,46 @@
 
 Chet.Admin 采用前后端分离架构，前后端通过 RESTful API 通信：
 
-```
-┌──────────────────────────────────────────────────────────┐
-│                      浏览器（用户）                         │
-└────────────────────────┬─────────────────────────────────┘
-                         │ HTTPS
-┌────────────────────────▼─────────────────────────────────┐
-│            前端（Vue 3 + Ant Design Vue）                │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐  │
-│  │  路由权限  │  │  状态管理  │  │  API 请求  │  │  视图层  │  │
-│  │  Router   │  │  Pinia   │  │  Axios   │  │  Views  │  │
-│  └──────────┘  └──────────┘  └────┬─────┘  └─────────┘  │
-└──────────────────────────────────┼───────────────────────┘
-                                   │ RESTful API (JSON)
-┌──────────────────────────────────▼───────────────────────┐
-│            后端（.NET 10 WebAPI + Clean Architecture）    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐  │
-│  │ 中间件管道 │  │ 控制器层   │  │  应用服务  │  │ 领域模型  │  │
-│  │Middleware │→│Controller │→│ Service  │→│ Domain  │  │
-│  └──────────┘  └──────────┘  └────┬─────┘  └─────────┘  │
-│                                   │                      │
-│  ┌────────────────────────────────▼────────────────────┐  │
-│  │            基础设施层（Infrastructure）             │  │
-│  │   EF Core  │  Redis 缓存  │  Serilog 日志  │  JWT  │  │
-│  └────────────────────────────────────────────────────┘  │
-└──────────────────────────────────┬───────────────────────┘
-                                   │
-                    ┌──────────────┼──────────────┐
-                    ▼              ▼              ▼
-              ┌──────────┐  ┌──────────┐  ┌──────────┐
-              │ SQLite / │  │  Redis   │  │  文件系统  │
-              │PostgreSQL│  │ （可选）   │  │  uploads │
-              └──────────┘  └──────────┘  └──────────┘
+```mermaid
+flowchart TB
+    User["浏览器（用户）"]
+
+    subgraph Frontend["前端（Vue 3 + Ant Design Vue）"]
+        direction LR
+        F1["路由权限 Router"]
+        F2["状态管理 Pinia"]
+        F3["API 请求 Axios"]
+        F4["视图层 Views"]
+    end
+
+    subgraph Backend["后端（.NET 10 WebAPI + Clean Architecture）"]
+        direction LR
+        B1["中间件管道<br/>Middleware"]
+        B2["控制器层<br/>Controller"]
+        B3["应用服务<br/>Service"]
+        B4["领域模型<br/>Domain"]
+        B1 --> B2 --> B3 --> B4
+
+        subgraph Infra["基础设施层（Infrastructure）"]
+            direction LR
+            I1["EF Core"]
+            I2["Redis 缓存"]
+            I3["Serilog 日志"]
+            I4["JWT"]
+        end
+        B3 -.-> Infra
+    end
+
+    subgraph Storage["数据存储"]
+        direction LR
+        S1["SQLite /<br/>PostgreSQL"]
+        S2["Redis<br/>（可选）"]
+        S3["文件系统<br/>uploads"]
+    end
+
+    User -->|HTTPS| Frontend
+    Frontend -->|RESTful API JSON| Backend
+    Backend --> Storage
 ```
 
 ## 2. 后端架构
@@ -49,9 +57,14 @@ Chet.Admin 采用前后端分离架构，前后端通过 RESTful API 通信：
 | 核心层 | `Chet.Admin.Domain` / `Contracts` / `Shared` | 领域实体、接口契约、共享类型 |
 | 基础设施层 | `Chet.Admin.Data` / `Caching` / `Configuration` / `Logging` | 数据访问、缓存、配置、日志 |
 
+```mermaid
+flowchart LR
+    Presentation["表示层"] --> Application["应用层"]
+    Application --> Core["核心层"]
+    Infrastructure["基础设施层"] --> Core
 ```
-表示层 ──→ 应用层 ──→ 核心层 ←── 基础设施层
-```
+
+> 核心层不依赖任何外层，是 Clean Architecture 的核心约束。
 
 > 后端分层详解、解决方案结构、启动流程、设计原则等深度内容，请参考 [后端架构](/backend/01-architecture)。
 
@@ -75,12 +88,17 @@ Chet.Admin.Web/
 
 前端请求统一通过 `requestClient`（封装的 Axios 实例）处理：
 
-```
-组件调用 API ──→ 请求拦截器（注入 Bearer Token / Accept-Language）
-            ──→ 后端 API
-            ──→ 响应拦截器（解析 success/data 字段）
-            ──→ Token 过期 → 自动刷新 RefreshToken
-            ──→ 401/403/404/500 → 统一错误提示
+```mermaid
+flowchart TB
+    A["组件调用 API"] --> B["请求拦截器<br/>注入 Bearer Token / Accept-Language"]
+    B --> C["后端 API"]
+    C --> D["响应拦截器<br/>解析 success/data 字段"]
+    D --> E{Token 过期?}
+    E -->|是| F["自动刷新 RefreshToken"]
+    F --> C
+    E -->|否| G{状态码}
+    G -->|401/403/404/500| H["统一错误提示"]
+    G -->|2xx| I["返回 data 数据"]
 ```
 
 ## 5. 部署架构

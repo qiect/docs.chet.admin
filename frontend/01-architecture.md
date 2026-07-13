@@ -126,11 +126,17 @@ src/
 
 各层依赖单向流动，避免循环：
 
-```text
-views ──→ composables / store / api ──→ adapter ──→ @core/ui-kit
-  │            │                          │
-  │            └──→ @vben/access          └──→ @vben/common-ui
-  └──→ router / locales
+```mermaid
+flowchart LR
+    Views["views"] --> Composables["composables"]
+    Views --> Store["store"]
+    Views --> Api["api"]
+    Views --> Router["router / locales"]
+    Composables --> Access["@vben/access"]
+    Store --> Access
+    Api --> Adapter["adapter"]
+    Adapter --> UiKit["@core/ui-kit"]
+    Adapter --> CommonUi["@vben/common-ui"]
 ```
 
 - **views** 只依赖 `api`、`store`、`composables`、`adapter`，不直接访问 `@core`

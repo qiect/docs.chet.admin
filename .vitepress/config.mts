@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // Chet.Admin 官方文档站点配置
-export default defineConfig({
+export default withMermaid(
+  defineConfig({
   lang: 'zh-CN',
   title: 'Chet.Admin',
   description: '基于 .NET 10 + Vue 3 的企业级 RBAC 权限管理系统',
@@ -202,4 +204,5 @@ export default defineConfig({
     lightModeSwitchTitle: '切换到浅色模式',
     darkModeSwitchTitle: '切换到深色模式',
   },
-})
+}),
+)

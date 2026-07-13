@@ -190,14 +190,25 @@ public string GenerateRefreshToken()
 
 每次刷新 Token 时，**同时更换 Refresh Token**：
 
-```
-登录 ──▶ 返回 AT1 + RT1
-         │
-         ▼ AT1 过期
-刷新 ──▶ 用 AT1 + RT1 换 AT2 + RT2  ← RT1 失效！
-         │
-         ▼ AT2 过期
-刷新 ──▶ 用 AT2 + RT2 换 AT3 + RT3  ← RT2 失效！
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant A as 认证服务
+
+    U->>A: 登录
+    A-->>U: 返回 AT1 + RT1
+
+    Note over U: AT1 过期
+
+    U->>A: 用 AT1 + RT1 刷新
+    Note over A: RT1 失效
+    A-->>U: 返回 AT2 + RT2
+
+    Note over U: AT2 过期
+
+    U->>A: 用 AT2 + RT2 刷新
+    Note over A: RT2 失效
+    A-->>U: 返回 AT3 + RT3
 ```
 
 **好处**：
@@ -494,22 +505,13 @@ public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
 
 ### 锁定流程图
 
-```
-       登录失败
-          │
-          ▼
-   失败次数 +1
-          │
-          ▼
-   失败次数 ≥ 5？──No──▶ 返回"邮箱或密码错误"
-          │
-         Yes
-          │
-          ▼
-   设置 LockedUntil = Now + 15min
-          │
-          ▼
-   返回"账号已锁定，请在 15 分钟后重试"
+```mermaid
+flowchart TB
+    A["登录失败"] --> B["失败次数 +1"]
+    B --> C{失败次数 ≥ 5?}
+    C -->|No| D["返回 邮箱或密码错误"]
+    C -->|Yes| E["设置 LockedUntil = Now + 15min"]
+    E --> F["返回 账号已锁定，请在 15 分钟后重试"]
 ```
 
 ### 关键设计
@@ -599,40 +601,20 @@ JWT 是**无状态**的，一旦签发就无法撤销（直到过期）。如何
 
 ### 流程图
 
-```
-用户 A 登录
-   │
-   ▼
-获得 Token T1（nbf=10:00）
-   │
-   ▼
-管理员强制下线用户 A
-   │
-   ▼
-黑名单记录：{userId: A, revokedAt: 10:05}
-   │
-   ▼
-用户 A 用 T1 请求 API
-   │
-   ▼
-JWT 验证：
-  T1.nbf (10:00) < 黑名单.revokedAt (10:05)？──Yes──▶ 拒绝！
-   │
-   ▼
-用户 A 重新登录
-   │
-   ▼
-获得 Token T2（nbf=10:10）
-   │
-   ▼
-用户 A 用 T2 请求 API
-   │
-   ▼
-JWT 验证：
-  T2.nbf (10:10) > 黑名单.revokedAt (10:05)？──Yes──▶ 通过！
-   │
-   ▼
-登录时清除黑名单记录
+```mermaid
+flowchart TB
+    A1["用户 A 登录"] --> A2["获得 Token T1<br/>nbf=10:00"]
+    A2 --> A3["管理员强制下线用户 A"]
+    A3 --> A4["黑名单记录<br/>userId: A, revokedAt: 10:05"]
+    A4 --> A5["用户 A 用 T1 请求 API"]
+    A5 --> A6{"JWT 验证<br/>T1.nbf 10:00 < 黑名单.revokedAt 10:05?"}
+    A6 -->|Yes| A7["拒绝！"]
+    A7 --> A8["用户 A 重新登录"]
+    A8 --> A9["获得 Token T2<br/>nbf=10:10"]
+    A9 --> A10["用户 A 用 T2 请求 API"]
+    A10 --> A11{"JWT 验证<br/>T2.nbf 10:10 > 黑名单.revokedAt 10:05?"}
+    A11 -->|Yes| A12["通过！"]
+    A12 --> A13["登录时清除黑名单记录"]
 ```
 
 ### 源码
@@ -1022,97 +1004,65 @@ openssl rand -base64 64
 
 把所有安全机制串起来，登录完整流程：
 
-```
-1. 客户端请求验证码
-   GET /api/v1/auth/captcha
-   └─▶ 返回 {id, svg}
-
-2. 客户端提交登录
-   POST /api/v1/auth/login
-   {email, password, captchaId, captchaCode}
-
-3. 限流检查
-   IP 是否超过 5 次/分钟？──Yes──▶ 429
-   │
-   No
-   │
-   ▼
-4. 验证码检查（失败 3 次后启用）
-   验证码对不对？──No──▶ 失败次数 +1
-   │
-   Yes
-   │
-   ▼
-5. 账户锁定检查
-   LockedUntil > Now？──Yes──▶ 返回剩余锁定时间
-   │
-   No
-   │
-   ▼
-6. 密码验证
-   BCrypt.Verify(password, hash)？──No──▶ 失败次数 +1
-   │                                          │
-   Yes                                        ▼
-   │                                    失败次数 ≥ 5？
-   ▼                                    │
-7. 密码过期检查                       No ──── Yes ──▶ 锁定 15 分钟
-   PasswordChangedAt + 90 天 < Now？
-   │
-   ▼
-8. 生成双令牌
-   Access Token（30 分钟）+ Refresh Token（7 天）
-   │
-   ▼
-9. 重置失败计数 + 标记在线
-   │
-   ▼
-10. 返回 Token
-    {accessToken, refreshToken, mustChangePassword}
+```mermaid
+flowchart TB
+    S1["1. 客户端请求验证码<br/>GET /api/v1/auth/captcha"] --> S2["返回 id, svg"]
+    S2 --> S3["2. 客户端提交登录<br/>POST /api/v1/auth/login<br/>email, password, captchaId, captchaCode"]
+    S3 --> S4{"3. 限流检查<br/>IP 是否超过 5 次/分钟?"}
+    S4 -->|Yes| S4a["429"]
+    S4 -->|No| S5{"4. 验证码检查<br/>（失败 3 次后启用）<br/>验证码对不对?"}
+    S5 -->|No| S5a["失败次数 +1"]
+    S5 -->|Yes| S6{"5. 账户锁定检查<br/>LockedUntil > Now?"}
+    S6 -->|Yes| S6a["返回剩余锁定时间"]
+    S6 -->|No| S7{"6. 密码验证<br/>BCrypt.Verify"}
+    S7 -->|No| S7a["失败次数 +1"]
+    S7a --> S7b{"失败次数 ≥ 5?"}
+    S7b -->|Yes| S7c["锁定 15 分钟"]
+    S7b -->|No| S7
+    S7 -->|Yes| S8{"7. 密码过期检查<br/>PasswordChangedAt + 90 天 < Now?"}
+    S8 --> S9["8. 生成双令牌<br/>Access Token 30 分钟 + Refresh Token 7 天"]
+    S9 --> S10["9. 重置失败计数 + 标记在线"]
+    S10 --> S11["10. 返回 Token<br/>accessToken, refreshToken, mustChangePassword"]
 ```
 
 ---
 
 ## 十四、架构图
 
-```
-┌──────────────────────────────────────────────────────────┐
-│                       客户端                              │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐       │
-│  │ 登录页    │  │ 验证码    │  │ Token 存储       │       │
-│  └──────────┘  └──────────┘  └──────────────────┘       │
-└──────────┬───────────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────────┐
-│                    AuthController                         │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐       │
-│  │ Login    │  │ Refresh  │  │ Captcha          │       │
-│  └──────────┘  └──────────┘  └──────────────────┘       │
-└──────────┬───────────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────────┐
-│                    AuthService                           │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐       │
-│  │ 登录     │  │ 注册     │  │ 刷新 Token       │       │
-│  └──────────┘  └──────────┘  └──────────────────┘       │
-└──────────┬───────────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────────┐
-│              JwtService + PasswordService                │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐       │
-│  │ 生成 AT  │  │ 生成 RT  │  │ BCrypt 哈希      │       │
-│  └──────────┘  └──────────┘  └──────────────────┘       │
-└──────────┬───────────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────────┐
-│            OnlineUserService（黑名单）                    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐       │
-│  │ 在线列表 │  │ 黑名单   │  │ 强制下线         │       │
-│  └──────────┘  └──────────┘  └──────────────────┘       │
-└──────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Client["客户端"]
+        direction LR
+        C1["登录页"]
+        C2["验证码"]
+        C3["Token 存储"]
+    end
+    subgraph AuthController["AuthController"]
+        direction LR
+        AC1["Login"]
+        AC2["Refresh"]
+        AC3["Captcha"]
+    end
+    subgraph AuthService["AuthService"]
+        direction LR
+        AS1["登录"]
+        AS2["注册"]
+        AS3["刷新 Token"]
+    end
+    subgraph Services["JwtService + PasswordService"]
+        direction LR
+        JS1["生成 AT"]
+        JS2["生成 RT"]
+        JS3["BCrypt 哈希"]
+    end
+    subgraph Online["OnlineUserService（黑名单）"]
+        direction LR
+        OS1["在线列表"]
+        OS2["黑名单"]
+        OS3["强制下线"]
+    end
+
+    Client --> AuthController --> AuthService --> Services --> Online
 ```
 
 ---

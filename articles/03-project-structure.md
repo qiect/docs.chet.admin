@@ -67,26 +67,16 @@ Chet.Admin.Api/
 
 ### 分层依赖方向
 
-```
-        ┌──────────────────┐
-        │   Chet.Admin.Api  │  ← 表示层（最外层）
-        │   (Controllers)   │
-        └────────┬─────────┘
-                 │ 依赖
-        ┌────────▼─────────┐
-        │  Application     │  ← 应用层（业务逻辑）
-        │  (Services)      │
-        └────────┬─────────┘
-                 │ 依赖
-        ┌────────▼─────────┐
-        │     Core         │  ← 核心层（领域 + 契约）
-        │ (Domain/Contracts)│   ⚠️ 不依赖任何其他层
-        └────────▲─────────┘
-                 │ 实现
-        ┌────────┴─────────┐
-        │ Infrastructure   │  ← 基础设施层（实现 Core 的接口）
-        │ (Data/Caching)   │
-        └──────────────────┘
+```mermaid
+flowchart TB
+    API["Chet.Admin.Api<br/>表示层（最外层）<br/>Controllers"]
+    App["Application<br/>应用层（业务逻辑）<br/>Services"]
+    Core["Core<br/>核心层（领域 + 契约）<br/>Domain / Contracts<br/>⚠️ 不依赖任何其他层"]
+    Infra["Infrastructure<br/>基础设施层<br/>Data / Caching<br/>实现 Core 的接口"]
+
+    API -->|依赖| App
+    App -->|依赖| Core
+    Infra -->|实现| Core
 ```
 
 **核心原则**：**依赖方向始终向内指向 Core 层**，Core 层零外部依赖。
@@ -358,26 +348,14 @@ Chet.Admin.Web/
 
 ### Monorepo 三大模块
 
-```
-┌─────────────────────────────────────────┐
-│              apps/                      │ ← 应用层（最终产物）
-│  └── web-antd（Ant Design Vue 应用）    │
-└────────────────┬────────────────────────┘
-                 │ 依赖
-┌────────────────▼────────────────────────┐
-│           packages/                     │ ← 核心包（复用能力）
-│  ├── @core/（基础/组件/UI Kit）         │
-│  ├── constants/（常量）                  │
-│  └── effects/（布局/权限/Hooks）        │
-└────────────────┬────────────────────────┘
-                 │ 依赖
-┌────────────────▼────────────────────────┐
-│           internal/                     │ ← 内部工具（不发布）
-│  ├── lint-configs/（代码规范）         │
-│  ├── vite-config/（构建配置）           │
-│  ├── tsconfig/（TS 配置）               │
-│  └── tailwind-config/（CSS 配置）      │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    Apps["apps/<br/>应用层（最终产物）<br/>web-antd（Ant Design Vue 应用）"]
+    Packages["packages/<br/>核心包（复用能力）<br/>@core / constants / effects"]
+    Internal["internal/<br/>内部工具（不发布）<br/>lint-configs / vite-config<br/>tsconfig / tailwind-config"]
+
+    Apps -->|依赖| Packages
+    Packages -->|依赖| Internal
 ```
 
 ---
@@ -678,12 +656,17 @@ Chet.Admin.Web/
 
 ### 后端项目引用
 
-```
-Chet.Admin.Api  ──▶ Chet.Admin.Application ──▶ Chet.Admin.Core ◀── Chet.Admin.Infrastructure
-     │                                          ▲
-     └──────────────────────────────────────────┘
-                       │
-                       └──▶ Chet.Admin.Infrastructure（直接引用，配置 DI）
+```mermaid
+flowchart LR
+    Api["Chet.Admin.Api"]
+    App["Chet.Admin.Application"]
+    Core["Chet.Admin.Core"]
+    Infra["Chet.Admin.Infrastructure"]
+
+    Api -->|引用| App
+    App -->|引用| Core
+    Infra -->|引用| Core
+    Api -.->|直接引用 配置 DI| Infra
 ```
 
 | 项目 | 引用 |

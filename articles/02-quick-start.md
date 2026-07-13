@@ -233,15 +233,17 @@ export default defineConfig(async () => {
 
 ### 代理原理
 
-```
-浏览器                    Vite Dev Server              后端
-  │  http://localhost:5666      │                      │
-  │  /api/v1/auth/login  ──────▶│                      │
-  │                              │  http://localhost:5000  │
-  │                              │  /api/v1/auth/login ──▶│
-  │                              │                      │
-  │                              │  ◀── JWT Token ──────│
-  │  ◀── Response ──────────────│                      │
+```mermaid
+sequenceDiagram
+    participant B as 浏览器<br/>localhost:5666
+    participant V as Vite Dev Server
+    participant A as 后端<br/>localhost:5000
+
+    B->>V: GET /api/v1/auth/login
+    Note over V: 代理转发到后端
+    V->>A: GET /api/v1/auth/login
+    A-->>V: 返回 JWT Token
+    V-->>B: 返回 Response
 ```
 
 - 前端所有 `/api/**` 请求会被转发到 `http://localhost:5000`

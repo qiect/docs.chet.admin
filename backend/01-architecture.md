@@ -68,10 +68,15 @@ Chet.Admin.Api/
 
 依赖方向只能向内：**表示层 → 应用层 → 核心层 ← 基础设施层**（核心层不依赖任何外层）。
 
-```
-表示层 ──→ 应用层 ──→ 核心层 ←── 基础设施层
-  │           │            │
-  └───────────┴────────────┘ （测试层依赖所有层）
+```mermaid
+flowchart LR
+    Presentation["表示层"] --> Application["应用层"]
+    Application --> Core["核心层"]
+    Infrastructure["基础设施层"] --> Core
+    Tests["测试层"] -.->|依赖所有层| Presentation
+    Tests -.-> Application
+    Tests -.-> Core
+    Tests -.-> Infrastructure
 ```
 
 ### 3.1 表示层（API Layer）
@@ -141,8 +146,11 @@ Chet.Admin.Api/
 
 ## 4. 依赖关系
 
-```
-表示层 ──→ 应用层 ──→ 核心层 ←── 基础设施层
+```mermaid
+flowchart LR
+    Presentation["表示层 API"] --> Application["应用层 Application"]
+    Application --> Core["核心层 Core"]
+    Infrastructure["基础设施层 Infrastructure"] --> Core
 ```
 
 - API 层引用 Application 层和 Infrastructure 层
@@ -154,34 +162,32 @@ Chet.Admin.Api/
 
 `Program.cs` 按六个阶段组织，顺序清晰：
 
-```
-① 初始化日志（Serilog）
-   └─ builder.ConfigureSerilog()
+```mermaid
+flowchart TB
+    S1["① 初始化日志 Serilog<br/>builder.ConfigureSerilog()"]
+    S2["② 服务注册 DI<br/>Controllers / Swagger / Database / Redis<br/>AutoMapper / Repositories / Services<br/>FluentValidation / JWT / CORS / MemoryCache"]
+    S3["③ 构建 WebApplication<br/>builder.Build()"]
+    S4["④ 数据库初始化<br/>app.InitializeDatabaseAsync()<br/>自动迁移 + 种子数据"]
+    S5["⑤ 中间件管道<br/>异常处理 → 日志上下文 → CORS → 限流<br/>→ SwaggerUI → 认证 → 审计日志 → 在线用户追踪<br/>→ 静态文件 → 控制器映射"]
+    S6["⑥ 启动监听<br/>app.Run()"]
 
-② 服务注册（DI）
-   └─ Controllers、Swagger、Database、Redis、AutoMapper、
-      Repositories、Services、FluentValidation、JWT、CORS、MemoryCache
-
-③ 构建 WebApplication
-   └─ builder.Build()
-
-④ 数据库初始化
-   └─ app.InitializeDatabaseAsync()  （自动迁移 + 种子数据）
-
-⑤ 中间件管道
-   └─ 异常处理 → 日志上下文 → CORS → 限流
-      → SwaggerUI → 认证 → 审计日志 → 在线用户追踪
-      → 静态文件（uploads）→ 控制器映射
-
-⑥ 启动监听
-   └─ app.Run()
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6
 ```
 
 ### 5.1 中间件管道顺序
 
-```
-异常处理 → 日志上下文 → CORS → 限流 → SwaggerUI
- → 认证 → 授权 → 审计日志 → 在线用户追踪 → 静态文件 → 控制器
+```mermaid
+flowchart LR
+    M1["异常处理"] --> M2["日志上下文"]
+    M2 --> M3["CORS"]
+    M3 --> M4["限流"]
+    M4 --> M5["SwaggerUI"]
+    M5 --> M6["认证"]
+    M6 --> M7["授权"]
+    M7 --> M8["审计日志"]
+    M8 --> M9["在线用户追踪"]
+    M9 --> M10["静态文件"]
+    M10 --> M11["控制器"]
 ```
 
 > 开发环境禁用 HTTPS 重定向，避免 Vite 代理请求被重定向到 HTTPS 端口。
