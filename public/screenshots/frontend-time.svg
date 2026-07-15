@@ -1,7 +1,153 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
-  <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">frontend-time</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 550" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="procGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2033"/>
+      <stop offset="100%" stop-color="#141A28"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#5B6B8A"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#06B6D4"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#10B981"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="550" fill="#11151F"/>
+  <!-- Outer border -->
+  <rect x="10" y="10" width="1080" height="530" fill="none" stroke="#0066FF" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <circle cx="10" cy="10" r="3" fill="#0066FF"/>
+  <circle cx="1090" cy="10" r="3" fill="#0066FF"/>
+  <circle cx="10" cy="540" r="3" fill="#0066FF"/>
+  <circle cx="1090" cy="540" r="3" fill="#0066FF"/>
+
+  <!-- Title -->
+  <text x="550" y="36" text-anchor="middle" fill="#E6EDF3" font-size="18" font-weight="bold">前端时间显示</text>
+  <text x="550" y="54" text-anchor="middle" fill="#7D88A0" font-size="11">UTC ISO 字符串 → dayjs 解析 → .tz() 转本地时区 → format 展示</text>
+
+  <!-- ============ Main pipeline ============ -->
+  <text x="30" y="84" fill="#7D88A0" font-size="10">处理管线 (Pipeline)</text>
+
+  <!-- Node 1: API Response (Backend) -->
+  <rect x="30" y="92" width="180" height="64" rx="6" fill="#2A1A45" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="120" y="112" text-anchor="middle" fill="#C4B5FD" font-size="11" font-weight="bold">API Response</text>
+  <text x="120" y="128" text-anchor="middle" fill="#9FB3B0" font-size="9">后端返回 UTC 字符串</text>
+  <text x="120" y="144" text-anchor="middle" fill="#6EE7B7" font-size="9">"2026-07-15T08:00:00Z"</text>
+
+  <!-- Arrow 1 -->
+  <line x1="210" y1="124" x2="246" y2="124" stroke="#5B6B8A" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="228" y="118" text-anchor="middle" fill="#7D88A0" font-size="8">value</text>
+
+  <!-- Node 2: dayjs(time) -->
+  <rect x="250" y="92" width="180" height="64" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="340" y="112" text-anchor="middle" fill="#67E8F9" font-size="11" font-weight="bold">dayjs(time)</text>
+  <text x="340" y="128" text-anchor="middle" fill="#9FB3B0" font-size="9">按 UTC 解析时间对象</text>
+  <text x="340" y="144" text-anchor="middle" fill="#67E8F9" font-size="9">Dayjs 实例</text>
+
+  <!-- Arrow 2 -->
+  <line x1="430" y1="124" x2="466" y2="124" stroke="#06B6D4" stroke-width="1.3" marker-end="url(#arrowCyan)"/>
+  <text x="448" y="118" text-anchor="middle" fill="#7D88A0" font-size="8">date</text>
+
+  <!-- Node 3: .tz(currentTimezone) -->
+  <rect x="470" y="92" width="190" height="64" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="565" y="112" text-anchor="middle" fill="#67E8F9" font-size="11" font-weight="bold">.tz(currentTimezone)</text>
+  <text x="565" y="128" text-anchor="middle" fill="#9FB3B0" font-size="9">转浏览器本地时区</text>
+  <text x="565" y="144" text-anchor="middle" fill="#FCD34D" font-size="9">Asia/Shanghai (UTC+8)</text>
+
+  <!-- Arrow 3 -->
+  <line x1="660" y1="124" x2="696" y2="124" stroke="#06B6D4" stroke-width="1.3" marker-end="url(#arrowCyan)"/>
+
+  <!-- Node 4: .format() -->
+  <rect x="700" y="92" width="170" height="64" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="785" y="112" text-anchor="middle" fill="#67E8F9" font-size="11" font-weight="bold">.format(fmt)</text>
+  <text x="785" y="128" text-anchor="middle" fill="#9FB3B0" font-size="9">格式化字符串</text>
+  <text x="785" y="144" text-anchor="middle" fill="#67E8F9" font-size="9">YYYY-MM-DD HH:mm:ss</text>
+
+  <!-- Arrow 4 -->
+  <line x1="870" y1="124" x2="906" y2="124" stroke="#10B981" stroke-width="1.3" marker-end="url(#arrowGreen)"/>
+
+  <!-- Node 5: Display -->
+  <rect x="910" y="92" width="160" height="64" rx="20" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="990" y="112" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="bold">界面显示</text>
+  <text x="990" y="128" text-anchor="middle" fill="#9FB3B0" font-size="9">表格 / 表单</text>
+  <text x="990" y="144" text-anchor="middle" fill="#6EE7B7" font-size="9">2026-07-15 16:00:00</text>
+
+  <!-- ============ Code snippet ============ -->
+  <rect x="30" y="180" width="1040" height="70" rx="6" fill="#161C2B" stroke="#2A3245" stroke-width="1"/>
+  <text x="44" y="198" fill="#7D88A0" font-size="10">date.ts 实现：</text>
+  <text x="44" y="216" fill="#9BC1FF" font-size="11">const date = dayjs.isDayjs(time) ? time : dayjs(time);</text>
+  <text x="44" y="232" fill="#9BC1FF" font-size="11">return date.tz(currentTimezone).format(format);</text>
+  <text x="44" y="246" fill="#6EE7B7" font-size="9">// currentTimezone = dayjs.tz.guess() · 由 dayjs/plugin/utc + dayjs/plugin/timezone 提供</text>
+
+  <!-- ============ Conversion example ============ -->
+  <text x="30" y="276" fill="#E6EDF3" font-size="12" font-weight="bold">同一份 UTC · 多时区展示示例</text>
+
+  <!-- Source UTC box -->
+  <rect x="30" y="288" width="220" height="80" rx="6" fill="#2A1A45" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="140" y="308" text-anchor="middle" fill="#C4B5FD" font-size="11" font-weight="bold">存储的 UTC</text>
+  <text x="140" y="328" text-anchor="middle" fill="#6EE7B7" font-size="12">2026-07-15T08:00:00Z</text>
+  <text x="140" y="348" text-anchor="middle" fill="#9FB3B0" font-size="9">后端 / 数据库唯一一份</text>
+  <text x="140" y="362" text-anchor="middle" fill="#9FB3B0" font-size="9"> Kind=Utc</text>
+
+  <!-- fan-out arrows -->
+  <line x1="250" y1="318" x2="306" y2="318" stroke="#5B6B8A" stroke-width="1.3" marker-end="url(#arrow)"/>
+
+  <!-- Branch: Beijing -->
+  <rect x="310" y="290" width="220" height="56" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="420" y="308" text-anchor="middle" fill="#67E8F9" font-size="10" font-weight="bold">北京 Asia/Shanghai</text>
+  <text x="420" y="324" text-anchor="middle" fill="#FCD34D" font-size="9">UTC+8</text>
+  <text x="420" y="340" text-anchor="middle" fill="#6EE7B7" font-size="11">2026-07-15 16:00:00</text>
+
+  <!-- Branch: London -->
+  <rect x="560" y="290" width="220" height="56" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="670" y="308" text-anchor="middle" fill="#67E8F9" font-size="10" font-weight="bold">伦敦 Europe/London</text>
+  <text x="670" y="324" text-anchor="middle" fill="#FCD34D" font-size="9">UTC+0</text>
+  <text x="670" y="340" text-anchor="middle" fill="#6EE7B7" font-size="11">2026-07-15 08:00:00</text>
+
+  <!-- Branch: New York -->
+  <rect x="810" y="290" width="220" height="56" rx="6" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="920" y="308" text-anchor="middle" fill="#67E8F9" font-size="10" font-weight="bold">纽约 America/New_York</text>
+  <text x="920" y="324" text-anchor="middle" fill="#FCD34D" font-size="9">UTC-4</text>
+  <text x="920" y="340" text-anchor="middle" fill="#6EE7B7" font-size="11">2026-07-15 04:00:00</text>
+
+  <!-- Connecting lines from UTC source to branches -->
+  <path d="M250,318 L280,318 L280,318 L310,318" fill="none" stroke="#5B6B8A" stroke-width="1.2"/>
+  <path d="M250,318 L280,250 L670,250 L670,290" fill="none" stroke="#5B6B8A" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <path d="M250,318 L280,250 L920,250 L920,290" fill="none" stroke="#5B6B8A" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+  <!-- ============ Highlighted conversion ============ -->
+  <rect x="30" y="370" width="1040" height="64" rx="6" fill="#0A2233" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="44" y="390" fill="#67E8F9" font-size="10" font-weight="bold">关键转换 (Highlighted)</text>
+  <text x="44" y="408" fill="#9FB3B0" font-size="10">存储 UTC:</text>
+  <text x="150" y="408" fill="#6EE7B7" font-size="11">2026-07-15T08:00:00Z</text>
+  <text x="340" y="408" fill="#7D88A0" font-size="14">→</text>
+  <text x="370" y="408" fill="#9FB3B0" font-size="10">北京时间:</text>
+  <text x="460" y="408" fill="#6EE7B7" font-size="11">2026-07-15 16:00:00</text>
+  <text x="640" y="408" fill="#7D88A0" font-size="14">→</text>
+  <text x="670" y="408" fill="#9FB3B0" font-size="10">表格显示:</text>
+  <text x="760" y="408" fill="#6EE7B7" font-size="11">2026-07-15 16:00:00</text>
+  <text x="44" y="424" fill="#6EE7B7" font-size="9">// dayjs("2026-07-15T08:00:00Z").tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:ss")</text>
+
+  <!-- ============ Legend ============ -->
+  <rect x="30" y="448" width="1040" height="82" rx="6" fill="#161C2B" stroke="#2A3245" stroke-width="1"/>
+  <text x="44" y="468" fill="#E6EDF3" font-size="11" font-weight="bold">图例 (Legend)</text>
+
+  <rect x="44" y="481" width="18" height="12" rx="3" fill="#2A1A45" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="70" y="491" fill="#C4B5FD" font-size="10">后端 / API 节点</text>
+
+  <rect x="220" y="481" width="18" height="12" rx="3" fill="url(#procGrad)" stroke="#06B6D4" stroke-width="1"/>
+  <text x="246" y="491" fill="#67E8F9" font-size="10">前端处理节点 (dayjs)</text>
+
+  <rect x="430" y="481" width="18" height="12" rx="3" fill="#0A2233" stroke="#06B6D4" stroke-width="1"/>
+  <text x="456" y="491" fill="#67E8F9" font-size="10">关键转换高亮</text>
+
+  <rect x="600" y="481" width="18" height="12" rx="3" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="626" y="491" fill="#6EE7B7" font-size="10">显示终点</text>
+
+  <text x="44" y="515" fill="#7D88A0" font-size="10">说明：</text>
+  <text x="44" y="525" fill="#9FB3B0" font-size="10">• 后端只存一份 UTC，前端通过 dayjs.tz 按各自时区展示 · currentTimezone 由 dayjs.tz.guess() 自动获取浏览器时区</text>
 </svg>

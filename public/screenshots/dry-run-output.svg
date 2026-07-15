@@ -1,7 +1,122 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <clipPath id="termClip">
+      <rect x="50" y="92" width="1000" height="528" rx="10"/>
+    </clipPath>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="650" fill="#11151F"/>
+  <!-- Outer dashed border -->
+  <rect x="1" y="1" width="1098" height="648" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- Corner dot -->
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">dry-run-output</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <!-- Title -->
+  <text x="550" y="48" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">dry-run 输出</text>
+  <text x="550" y="70" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin Project Renamer · --dry-run 预览（不写入任何文件）</text>
+
+  <!-- Terminal window -->
+  <g clip-path="url(#termClip)">
+    <rect x="50" y="92" width="1000" height="528" fill="#0D1117"/>
+    <rect x="50" y="92" width="1000" height="36" fill="#161B22"/>
+  </g>
+  <rect x="50" y="92" width="1000" height="528" rx="10" fill="none" stroke="#1F2937" stroke-width="1.5"/>
+  <line x1="50" y1="128" x2="1050" y2="128" stroke="#1F2937" stroke-width="1"/>
+
+  <!-- Title bar dots -->
+  <circle cx="72" cy="110" r="6" fill="#FF5F56"/>
+  <circle cx="92" cy="110" r="6" fill="#FFBD2E"/>
+  <circle cx="112" cy="110" r="6" fill="#27C93F"/>
+  <text x="550" y="114" text-anchor="middle" fill="#6B7280" font-size="12">chet-rename/bin.mjs — node bin.mjs --dry-run --name MyApp.Admin</text>
+
+  <!-- Banner -->
+  <rect x="76" y="142" width="4" height="16" fill="#22D3EE"/>
+  <text x="88" y="156" fill="#22D3EE" font-size="15" font-weight="700">Chet.Admin Project Renamer  v1.0</text>
+
+  <!-- Mapping preview header -->
+  <text x="76" y="184" fill="#4A5366" font-size="12">─── 映射预览 ───────────────────────────────────</text>
+
+  <!-- Mapping rows -->
+  <text y="206" font-size="13">
+    <tspan x="80" fill="#FBBF24">ChetWebApiTemplate</tspan>
+    <tspan x="300" fill="#6B7280">→</tspan>
+    <tspan x="328" fill="#4ADE80">MyAppAdmin</tspan>
+    <tspan x="540" fill="#6B7280">历史遗留值（文档中）</tspan>
+  </text>
+  <text y="228" font-size="13">
+    <tspan x="80" fill="#FBBF24">qiect/Chet.Admin</tspan>
+    <tspan x="300" fill="#6B7280">→</tspan>
+    <tspan x="328" fill="#4ADE80">mycompany/MyApp.Admin</tspan>
+    <tspan x="540" fill="#6B7280">GitHub 仓库路径</tspan>
+  </text>
+  <text y="250" font-size="13">
+    <tspan x="80" fill="#FBBF24">Chet.Admin.db</tspan>
+    <tspan x="300" fill="#6B7280">→</tspan>
+    <tspan x="328" fill="#4ADE80">MyApp.Admin.db</tspan>
+    <tspan x="540" fill="#6B7280">数据库文件名</tspan>
+  </text>
+  <text y="272" font-size="13">
+    <tspan x="80" fill="#FBBF24">chet-admin-api</tspan>
+    <tspan x="300" fill="#6B7280">→</tspan>
+    <tspan x="328" fill="#4ADE80">myapp-admin-api</tspan>
+    <tspan x="540" fill="#6B7280">docker 镜像名</tspan>
+  </text>
+  <text y="294" font-size="13">
+    <tspan x="80" fill="#FBBF24">Chet.Admin</tspan>
+    <tspan x="300" fill="#6B7280">→</tspan>
+    <tspan x="328" fill="#4ADE80">MyApp.Admin</tspan>
+    <tspan x="540" fill="#6B7280">namespace / csproj / 路径</tspan>
+  </text>
+
+  <text x="76" y="316" fill="#4A5366" font-size="12">────────────────────────────────────────────────</text>
+
+  <!-- Step / info / success lines -->
+  <text y="340" font-size="13">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#E8ECF4">扫描项目目录: /Chet.Admin</tspan>
+  </text>
+  <text y="362" font-size="13">
+    <tspan x="80" fill="#60A5FA">ℹ</tspan>
+    <tspan x="100" fill="#E8ECF4">找到 312 个待检查文件</tspan>
+  </text>
+  <text y="384" font-size="13">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#E8ECF4">替换文件内容...</tspan>
+  </text>
+  <text y="406" font-size="13">
+    <tspan x="80" fill="#4ADE80">✓</tspan>
+    <tspan x="100" fill="#FBBF24">[DRY RUN]</tspan>
+    <tspan x="180" fill="#4ADE80">287 个文件改动，1542 处匹配</tspan>
+  </text>
+  <text y="428" font-size="13">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#E8ECF4">收集文件重命名...</tspan>
+  </text>
+  <text y="450" font-size="13">
+    <tspan x="80" fill="#60A5FA">ℹ</tspan>
+    <tspan x="100" fill="#E8ECF4">5 个文件需要重命名</tspan>
+  </text>
+
+  <!-- Dry run report -->
+  <text x="80" y="478" font-size="13" fill="#FBBF24">[DRY RUN] 将要执行的操作：</text>
+  <text x="100" y="499" font-size="13" fill="#9CA3AF">文件内容替换：287 个文件，1542 处匹配</text>
+  <text x="100" y="520" font-size="13" fill="#9CA3AF">文件重命名：  5 个</text>
+  <text x="100" y="541" font-size="13" fill="#9CA3AF">文件夹重命名：6 个</text>
+
+  <text x="76" y="566" fill="#4A5366" font-size="12">─── 文件重命名明细 ──</text>
+  <text y="588" font-size="13">
+    <tspan x="100" fill="#9CA3AF">Chet.Admin.slnx</tspan>
+    <tspan x="260" fill="#6B7280">→</tspan>
+    <tspan x="285" fill="#4ADE80">MyApp.Admin.slnx</tspan>
+  </text>
+  <text y="608" font-size="13">
+    <tspan x="100" fill="#9CA3AF">Chet.Admin.Api.csproj</tspan>
+    <tspan x="290" fill="#6B7280">→</tspan>
+    <tspan x="315" fill="#4ADE80">MyApp.Admin.Api.csproj</tspan>
+  </text>
+  <text x="80" y="624" font-size="13" fill="#FBBF24">[DRY RUN] 不会执行任何写操作。</text>
 </svg>

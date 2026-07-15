@@ -1,7 +1,163 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="modalBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="700" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="698" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">assign-menu-modal</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">菜单分配弹窗</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">AssignModal · Ant Design Tree · check-strictly 父子独立勾选</text>
+
+  <!-- Modal backdrop overlay -->
+  <rect x="80" y="80" width="940" height="580" fill="#0A0E14" opacity="0.5" rx="8"/>
+
+  <!-- Modal container -->
+  <rect x="150" y="90" width="800" height="540" rx="10" fill="url(#modalBg)" stroke="#2A3550" stroke-width="2"/>
+
+  <!-- Modal header -->
+  <rect x="150" y="90" width="800" height="48" rx="10" fill="#0B2A8C"/>
+  <rect x="150" y="130" width="800" height="8" fill="#0B2A8C"/>
+  <text x="170" y="120" fill="#FFFFFF" font-size="15" font-weight="700">分配菜单</text>
+  <text x="930" y="120" text-anchor="end" fill="#9CA3AF" font-size="18">✕</text>
+
+  <!-- Alert info box -->
+  <rect x="170" y="150" width="760" height="40" rx="6" fill="#06281F" stroke="#10B981"/>
+  <circle cx="190" cy="170" r="8" fill="#10B981"/>
+  <text x="190" y="174" text-anchor="middle" fill="#0D1117" font-size="11" font-weight="700">i</text>
+  <text x="210" y="170" fill="#A7F3D0" font-size="11">勾选菜单分配访问权限。父子节点独立勾选，可单独分配按钮权限。</text>
+  <text x="210" y="184" fill="#6EE7B7" font-size="10">check-strictly = true</text>
+
+  <!-- Tree container -->
+  <rect x="170" y="205" width="760" height="365" rx="6" fill="#0D1117" stroke="#2A3550"/>
+  <text x="186" y="225" fill="#6B7280" font-size="11">Tree · checkable · default-expand-all</text>
+
+  <!-- Tree nodes -->
+  <!-- L1: 系统管理 (Directory, expanded) -->
+  <g>
+    <path d="M190,248 L196,252 L190,256 Z" fill="#9CA3AF"/>
+    <rect x="200" y="242" width="20" height="16" rx="3" fill="none" stroke="#1E40AF" stroke-width="1.5"/>
+    <path d="M203,246 L211,246 M203,250 L211,250" stroke="#60A5FA" stroke-width="1"/>
+    <text x="230" y="255" fill="#60A5FA" font-size="12" font-weight="600">系统管理</text>
+    <text x="295" y="255" fill="#6B7280" font-size="10">Directory</text>
+    <!-- half-checked (indeterminate) -->
+    <rect x="930" y="246" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <line x1="934" y1="254" x2="942" y2="254" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+  <line x1="210" y1="266" x2="210" y2="560" stroke="#2A3550" stroke-width="1"/>
+
+  <!-- L2: 用户管理 (Menu, checked) -->
+  <g>
+    <path d="M214,278 L220,282 L214,286 Z" fill="#9CA3AF"/>
+    <rect x="224" y="272" width="20" height="16" rx="2" fill="#06281F" stroke="#34D399"/>
+    <text x="234" y="284" text-anchor="middle" fill="#34D399" font-size="9">📄</text>
+    <text x="254" y="285" fill="#34D399" font-size="12" font-weight="600">用户管理</text>
+    <text x="310" y="285" fill="#6B7280" font-size="10">Menu · /system/user</text>
+    <rect x="930" y="276" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <path d="M934,284 L938,288 L944,280" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  </g>
+  <line x1="234" y1="296" x2="234" y2="400" stroke="#2A3550" stroke-width="1"/>
+
+  <!-- L3: buttons under 用户管理 -->
+  <g>
+    <rect x="248" y="304" width="20" height="16" rx="2" fill="#221043" stroke="#F472B6"/>
+    <text x="258" y="316" text-anchor="middle" fill="#F472B6" font-size="9">●</text>
+    <text x="278" y="317" fill="#F472B6" font-size="11">新增 [按钮]</text>
+    <text x="345" y="317" fill="#6B7280" font-size="10">Button · system:user:create</text>
+    <rect x="930" y="308" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <path d="M934,316 L938,320 L944,312" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  </g>
+  <g>
+    <rect x="248" y="330" width="20" height="16" rx="2" fill="#221043" stroke="#F472B6"/>
+    <text x="258" y="342" text-anchor="middle" fill="#F472B6" font-size="9">●</text>
+    <text x="278" y="343" fill="#F472B6" font-size="11">编辑 [按钮]</text>
+    <text x="345" y="343" fill="#6B7280" font-size="10">Button · system:user:update</text>
+    <rect x="930" y="334" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <path d="M934,342 L938,346 L944,338" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  </g>
+  <g>
+    <rect x="248" y="356" width="20" height="16" rx="2" fill="#221043" stroke="#F472B6"/>
+    <text x="258" y="368" text-anchor="middle" fill="#F472B6" font-size="9">●</text>
+    <text x="278" y="369" fill="#F472B6" font-size="11">删除 [按钮]</text>
+    <text x="345" y="369" fill="#6B7280" font-size="10">Button · system:user:delete</text>
+    <rect x="930" y="360" width="16" height="16" rx="3" fill="none" stroke="#4A5366"/>
+  </g>
+
+  <!-- L2: 角色管理 (Menu, checked) -->
+  <g>
+    <path d="M214,392 L220,396 L214,400 Z" fill="#9CA3AF"/>
+    <rect x="224" y="386" width="20" height="16" rx="2" fill="#06281F" stroke="#34D399"/>
+    <text x="234" y="398" text-anchor="middle" fill="#34D399" font-size="9">📄</text>
+    <text x="254" y="399" fill="#34D399" font-size="12" font-weight="600">角色管理</text>
+    <text x="310" y="399" fill="#6B7280" font-size="10">Menu · /system/role</text>
+    <rect x="930" y="390" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <path d="M934,398 L938,402 L944,394" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  </g>
+  <line x1="234" y1="410" x2="234" y2="470" stroke="#2A3550" stroke-width="1"/>
+
+  <!-- L3: API under 角色管理 -->
+  <g>
+    <rect x="248" y="414" width="20" height="16" rx="2" fill="#3B2A0A" stroke="#F59E0B"/>
+    <text x="258" y="426" text-anchor="middle" fill="#F59E0B" font-size="9">⇄</text>
+    <text x="278" y="427" fill="#F59E0B" font-size="11">GET /roles</text>
+    <text x="345" y="427" fill="#6B7280" font-size="10">Api · role:list</text>
+    <rect x="930" y="418" width="16" height="16" rx="3" fill="#1E40AF" stroke="#1E40AF"/>
+    <path d="M934,426 L938,430 L944,422" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- L2: 菜单管理 (Menu, unchecked) -->
+  <g>
+    <path d="M214,452 L220,456 L214,460 Z" fill="#9CA3AF"/>
+    <rect x="224" y="446" width="20" height="16" rx="2" fill="#06281F" stroke="#34D399"/>
+    <text x="234" y="458" text-anchor="middle" fill="#34D399" font-size="9">📄</text>
+    <text x="254" y="459" fill="#34D399" font-size="12" font-weight="600">菜单管理</text>
+    <text x="310" y="459" fill="#6B7280" font-size="10">Menu · /system/menu</text>
+    <rect x="930" y="450" width="16" height="16" rx="3" fill="none" stroke="#4A5366"/>
+  </g>
+
+  <!-- L1: 仪表盘 (Directory, collapsed, unchecked) -->
+  <g>
+    <path d="M190,488 L196,492 L190,496 Z" fill="#9CA3AF" transform="rotate(90 193 492)"/>
+    <rect x="200" y="482" width="20" height="16" rx="3" fill="none" stroke="#60A5FA" stroke-width="1.5"/>
+    <path d="M203,486 L211,486 M203,490 L211,490" stroke="#60A5FA" stroke-width="1"/>
+    <text x="230" y="495" fill="#60A5FA" font-size="12" font-weight="600">仪表盘</text>
+    <text x="280" y="495" fill="#6B7280" font-size="10">Directory</text>
+    <rect x="930" y="486" width="16" height="16" rx="3" fill="none" stroke="#4A5366"/>
+  </g>
+
+  <!-- L1: 审计日志 (Directory, collapsed, unchecked) -->
+  <g>
+    <path d="M190,520 L196,524 L190,528 Z" fill="#9CA3AF" transform="rotate(90 193 524)"/>
+    <rect x="200" y="514" width="20" height="16" rx="3" fill="none" stroke="#60A5FA" stroke-width="1.5"/>
+    <path d="M203,518 L211,518 M203,522 L211,522" stroke="#60A5FA" stroke-width="1"/>
+    <text x="230" y="527" fill="#60A5FA" font-size="12" font-weight="600">审计日志</text>
+    <text x="295" y="527" fill="#6B7280" font-size="10">Directory</text>
+    <rect x="930" y="518" width="16" height="16" rx="3" fill="none" stroke="#4A5366"/>
+  </g>
+
+  <!-- Footer -->
+  <rect x="150" y="580" width="800" height="50" rx="10" fill="#0D1117" stroke="#2A3550"/>
+  <text x="780" y="611" text-anchor="end" fill="#9CA3AF" font-size="10">已选 5 项 · 4 菜单 + 1 接口</text>
+  <!-- 取消 button -->
+  <rect x="800" y="595" width="80" height="30" rx="6" fill="none" stroke="#4A5366"/>
+  <text x="840" y="614" text-anchor="middle" fill="#9CA3AF" font-size="12">取消</text>
+  <!-- 确定 button -->
+  <rect x="890" y="595" width="80" height="30" rx="6" fill="#1E40AF" stroke="#1E40AF"/>
+  <text x="930" y="614" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="600">确定</text>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="80" y="650" width="940" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="100" y="669" fill="#6B7280" font-size="11">图例：</text>
+    <rect x="145" y="660" width="14" height="10" rx="2" fill="none" stroke="#60A5FA"/><text x="165" y="669" fill="#C8D0E0" font-size="11">Directory 目录</text>
+    <rect x="250" y="660" width="14" height="10" rx="2" fill="none" stroke="#34D399"/><text x="270" y="669" fill="#C8D0E0" font-size="11">Menu 菜单</text>
+    <rect x="335" y="660" width="14" height="10" rx="2" fill="none" stroke="#F472B6"/><text x="355" y="669" fill="#C8D0E0" font-size="11">Button 按钮</text>
+    <rect x="420" y="660" width="14" height="10" rx="2" fill="none" stroke="#F59E0B"/><text x="440" y="669" fill="#C8D0E0" font-size="11">Api 接口</text>
+    <rect x="500" y="660" width="14" height="10" rx="2" fill="#1E40AF" stroke="#1E40AF"/><path d="M503,668 L506,671 L511,665" stroke="#FFF" stroke-width="1.2" fill="none"/><text x="520" y="669" fill="#C8D0E0" font-size="11">勾选</text>
+    <rect x="560" y="660" width="14" height="10" rx="2" fill="#1E40AF" stroke="#1E40AF"/><line x1="563" y1="665" x2="571" y2="665" stroke="#FFF" stroke-width="1.2"/><text x="580" y="669" fill="#C8D0E0" font-size="11">半选(子有勾)</text>
+    <text x="100" y="683" fill="#9CA3AF" font-size="11">关键机制：check-strictly=true · 父子独立 · 按钮/接口节点作为菜单的子节点挂载</text>
+  </g>
 </svg>

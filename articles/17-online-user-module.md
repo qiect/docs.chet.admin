@@ -536,7 +536,7 @@ const columns: VxeTableGridColumns<any> = [
 ```
 
 <!-- 在线用户列表界面 -->
-![在线用户列表](/screenshots/online-user.svg)
+![在线用户列表](/screenshots/online-user.png)
 
 **注意**：这个列表 **不分页**，因为内存数据量不大：
 

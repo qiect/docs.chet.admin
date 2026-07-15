@@ -1,7 +1,169 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A1A45"/>
+      <stop offset="1" stop-color="#1E1230"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A33"/>
+      <stop offset="1" stop-color="#08191F"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06281F"/>
+      <stop offset="1" stop-color="#031A14"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#06B6D4"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="720" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="718" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">audit-log-architecture</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">审计日志架构 · Audit Log Architecture</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin · 全局中间件拦截写操作 + IServiceScopeFactory 异步后台写入</text>
+
+  <!-- Pipeline band -->
+  <rect x="40" y="74" width="1020" height="66" rx="8" fill="#0E1525" stroke="#1F2A44" stroke-width="1"/>
+  <text x="52" y="92" fill="#5A6788" font-size="11">① Request Pipeline · 中间件管道（Program.cs）</text>
+  <g font-size="11" fill="#C7D0E0">
+    <rect x="60" y="104" width="78" height="28" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="99" y="122" text-anchor="middle">Client</text>
+    <line x1="140" y1="118" x2="168" y2="118" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="170" y="104" width="100" height="28" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="220" y="122" text-anchor="middle">Auth (JWT)</text>
+    <line x1="272" y1="118" x2="300" y2="118" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="302" y="100" width="190" height="36" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="2"/>
+    <text x="397" y="122" text-anchor="middle" fill="#67E8F9" font-weight="600">AuditLogMiddleware ★</text>
+    <line x1="494" y1="118" x2="522" y2="118" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="524" y="104" width="170" height="28" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="609" y="122" text-anchor="middle">OnlineUserTracking</text>
+    <line x1="696" y1="118" x2="724" y2="118" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="726" y="104" width="160" height="28" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="806" y="122" text-anchor="middle">MapControllers</text>
+    <text x="905" y="122" fill="#4A5366" font-size="10">…(异常/CORS/限流/Swagger)</text>
+  </g>
+
+  <!-- Middleware detail (left) -->
+  <rect x="40" y="158" width="560" height="312" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="56" y="180" fill="#67E8F9" font-size="13" font-weight="600">② AuditLogMiddleware.InvokeAsync</text>
+  <text x="56" y="196" fill="#5A6788" font-size="10">仅拦截 /api/v* 且非 GET 的写操作；GET 直接放行</text>
+
+  <g font-size="11" fill="#C7D0E0">
+    <text x="60" y="222" fill="#06B6D4">1</text><text x="80" y="222">StartWatch — Stopwatch 计时开始</text>
+    <text x="60" y="244" fill="#06B6D4">2</text><text x="80" y="244">捕获请求体 — Request.Body.CanSeek 判断</text>
+    <text x="60" y="266" fill="#06B6D4">3</text><text x="80" y="266">MemoryStream 替换 Response.Body</text>
+    <text x="60" y="288" fill="#06B6D4">4</text><text x="80" y="288">await _next(context) — 放行至控制器</text>
+    <text x="60" y="310" fill="#06B6D4">5</text><text x="80" y="310">恢复响应流 — 拿到 StatusCode</text>
+    <text x="60" y="332" fill="#06B6D4">6</text><text x="80" y="332">JWT Claim —&gt; userId / userName（未认证跳过）</text>
+    <text x="60" y="354" fill="#06B6D4">7</text><text x="80" y="354">模块/动作中文化 — ModuleMap + ActionMap</text>
+    <text x="60" y="376" fill="#06B6D4">8</text><text x="80" y="376">请求体 &gt;2000 字符自动截断 (truncated)</text>
+    <text x="60" y="398" fill="#06B6D4">9</text><text x="80" y="398">数据提前取出为局部变量（避 HttpContext 跨线程）</text>
+    <text x="60" y="420" fill="#06B6D4">10</text><text x="80" y="420">Task.Run fire-and-forget —&gt; 独立 DI 作用域写入</text>
+  </g>
+  <text x="56" y="448" fill="#4A5366" font-size="10">耗时 Duration · 操作时间 OperatedAt(UTC) · IP · UserAgent 全记录</text>
+
+  <!-- Async write branch (right) -->
+  <rect x="620" y="158" width="440" height="312" rx="8" fill="url(#purpleGrad)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="636" y="180" fill="#DDD6FE" font-size="13" font-weight="600">③ Fire-and-Forget 异步写入</text>
+  <text x="636" y="196" fill="#7C6FB0" font-size="10">解决 scoped DbContext 在后台线程已释放的陷阱</text>
+
+  <g font-size="11" fill="#E9D5FF">
+    <rect x="636" y="212" width="408" height="44" rx="5" fill="#1E1230" stroke="#8B5CF6"/>
+    <text x="648" y="230">IServiceScopeFactory scopeFactory</text>
+    <text x="648" y="248" fill="#A78BFA" font-size="10">注入工厂而非直接 DbContext（关键）</text>
+
+    <line x1="840" y1="256" x2="840" y2="276" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+    <rect x="636" y="278" width="408" height="44" rx="5" fill="#1E1230" stroke="#8B5CF6"/>
+    <text x="648" y="296">using var scope = scopeFactory.CreateScope()</text>
+    <text x="648" y="314" fill="#A78BFA" font-size="10">创建独立 DI 作用域，拿自己的 AppDbContext</text>
+
+    <line x1="840" y1="322" x2="840" y2="342" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+    <rect x="636" y="344" width="408" height="44" rx="5" fill="#1E1230" stroke="#8B5CF6"/>
+    <text x="648" y="362">auditLogService.LogAsync(auditLog)</text>
+    <text x="648" y="380" fill="#A78BFA" font-size="10">IAuditLogService 通过 GetRequiredService 解析</text>
+
+    <line x1="840" y1="388" x2="840" y2="408" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+    <rect x="636" y="410" width="408" height="44" rx="5" fill="#2A1A1A" stroke="#EF4444"/>
+    <text x="648" y="428" fill="#FCA5A5">try / catch (Exception ex)</text>
+    <text x="648" y="446" fill="#A78BFA" font-size="10">审计失败仅记日志，不影响主业务响应</text>
+  </g>
+
+  <!-- Arrow from middleware to async branch -->
+  <path d="M 600 314 Q 620 314 620 314" fill="none" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)" stroke-dasharray="4 3"/>
+
+  <!-- Query / Clear path -->
+  <text x="52" y="494" fill="#5A6788" font-size="11">④ 查询与清理路径 · Query &amp; Clear Path</text>
+
+  <rect x="40" y="504" width="280" height="116" rx="8" fill="url(#blueGrad)" stroke="#0066FF" stroke-width="1.5"/>
+  <text x="56" y="524" fill="#93C5FD" font-size="12" font-weight="600">AuditLogsController</text>
+  <text x="56" y="540" fill="#5A6788" font-size="10">[Authorize] · /api/v1/auditlogs</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <text x="56" y="562">[HttpGet("paged")]</text>
+    <text x="56" y="578" fill="#7C8AA5" font-size="9.5">  userId/module/action/时间/keyword</text>
+    <text x="56" y="598">[HttpDelete("clear")]</text>
+    <text x="56" y="614" fill="#7C8AA5" font-size="9.5">  ?before=按时间清理历史</text>
+  </g>
+
+  <rect x="340" y="504" width="280" height="116" rx="8" fill="url(#purpleGrad)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="356" y="524" fill="#DDD6FE" font-size="12" font-weight="600">AuditLogService</text>
+  <text x="356" y="540" fill="#7C6FB0" font-size="10">IAuditLogService · 业务逻辑层</text>
+  <g font-size="10.5" fill="#E9D5FF">
+    <text x="356" y="562">LogAsync(dto) — 写入</text>
+    <text x="356" y="582">GetPagedAuditLogsAsync</text>
+    <text x="356" y="596" fill="#A78BFA" font-size="9.5">  AsNoTracking · 多维筛选 · 关键词</text>
+    <text x="356" y="614">ClearBeforeAsync(before)</text>
+  </g>
+
+  <rect x="640" y="504" width="420" height="116" rx="8" fill="url(#greenGrad)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="656" y="524" fill="#6EE7B7" font-size="12" font-weight="600">Data Layer · AuditLogEntity (15 字段)</text>
+  <text x="656" y="540" fill="#5C8C7A" font-size="10">AppDbContext.AuditLogs → PostgreSQL/SQL Server</text>
+  <g font-size="10" fill="#A7F3D0">
+    <text x="656" y="560">Id · UserId · UserName · Action · Module</text>
+    <text x="656" y="576">Description · HttpMethod · RequestPath · RequestData</text>
+    <text x="656" y="592">StatusCode · ClientIp · UserAgent · Duration(ms)</text>
+    <text x="656" y="608">OperatedAt(UTC) · TargetId?</text>
+  </g>
+
+  <!-- DB cylinder -->
+  <g>
+    <ellipse cx="870" cy="640" rx="40" ry="9" fill="#06281F" stroke="#10B981"/>
+    <rect x="830" y="640" width="80" height="22" fill="#06281F" stroke="#10B981"/>
+    <ellipse cx="870" cy="662" rx="40" ry="9" fill="#06281F" stroke="#10B981"/>
+    <line x1="830" y1="640" x2="830" y2="662" stroke="#10B981"/>
+    <line x1="910" y1="640" x2="910" y2="662" stroke="#10B981"/>
+    <text x="870" y="654" text-anchor="middle" fill="#6EE7B7" font-size="10">AuditLogs</text>
+  </g>
+
+  <!-- Arrows: Controller -> Service -> Data -->
+  <line x1="320" y1="562" x2="338" y2="562" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="620" y1="562" x2="638" y2="562" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Async write arrow into DB -->
+  <path d="M 840 458 Q 840 540 870 632" fill="none" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+
+  <!-- Legend -->
+  <rect x="40" y="676" width="1020" height="32" rx="6" fill="#161C2B" stroke="#2A3550"/>
+  <g font-size="10.5" fill="#9AA6BF">
+    <rect x="54" y="686" width="12" height="12" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="72" y="696">Controller</text>
+    <rect x="146" y="686" width="12" height="12" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="164" y="696">Service</text>
+    <rect x="226" y="686" width="12" height="12" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="244" y="696">Middleware</text>
+    <rect x="326" y="686" width="12" height="12" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="344" y="696">Data/DB</text>
+    <line x1="406" y1="692" x2="430" y2="692" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="436" y="696">同步</text>
+    <line x1="476" y1="692" x2="500" y2="692" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+    <text x="506" y="696">异步 fire-and-forget</text>
+    <text x="640" y="696" fill="#5A6788">全链路：请求 → 中间件拦截 → 后台异步写库 → 查询/清理接口独立</text>
+  </g>
 </svg>

@@ -1,7 +1,176 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 880" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="880" fill="#11151F"/>
+  <rect x="1" y="1" width="1398" height="878" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">login-sequence</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="700" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">登录时序 · Login Sequence</text>
+  <text x="700" y="56" text-anchor="middle" fill="#4A5366" font-size="12">AuthController.Login + AuthService.LoginAsync · 双令牌签发 · 失败 5 次锁 15 分钟</text>
+
+  <!-- Actor boxes -->
+  <g>
+    <rect x="50" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#3B82F6"/>
+    <text x="140" y="105" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">Client（前端 Vue）</text>
+
+    <rect x="250" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#3B82F6"/>
+    <text x="340" y="105" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">AuthController</text>
+
+    <rect x="450" y="80" width="180" height="40" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="540" y="105" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">AuthService</text>
+
+    <rect x="650" y="80" width="180" height="40" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="740" y="105" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">PasswordService</text>
+
+    <rect x="850" y="80" width="180" height="40" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="940" y="105" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">JwtService</text>
+
+    <rect x="1050" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#10B981"/>
+    <text x="1140" y="105" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">DB · Users 表</text>
+  </g>
+
+  <!-- Lifelines -->
+  <g stroke="#3A4666" stroke-width="1" stroke-dasharray="4 4">
+    <line x1="140" y1="120" x2="140" y2="760"/>
+    <line x1="340" y1="120" x2="340" y2="760"/>
+    <line x1="540" y1="120" x2="540" y2="760"/>
+    <line x1="740" y1="120" x2="740" y2="760"/>
+    <line x1="940" y1="120" x2="940" y2="760"/>
+    <line x1="1140" y1="120" x2="1140" y2="760"/>
+  </g>
+
+  <!-- Activation boxes -->
+  <g fill="#1E293B" stroke="#3B82F6" stroke-width="1">
+    <rect x="336" y="135" width="8" height="610"/>
+    <rect x="536" y="265" width="8" height="350"/>
+    <rect x="736" y="350" width="8" height="40"/>
+    <rect x="936" y="435" width="8" height="40"/>
+    <rect x="936" y="490" width="8" height="40"/>
+  </g>
+
+  <!-- M1: Client → AuthController -->
+  <line x1="144" y1="155" x2="336" y2="155" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="240" y="148" text-anchor="middle" fill="#E8ECF4" font-size="11">① POST /auth/login {email, password, captchaId?, captchaCode?}</text>
+
+  <!-- M2: AuthController → DB -->
+  <line x1="344" y1="185" x2="1136" y2="185" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="740" y="178" text-anchor="middle" fill="#E8ECF4" font-size="11">② GetByEmailAsync(email)</text>
+
+  <!-- M3: DB → AuthController (return) -->
+  <line x1="1136" y1="210" x2="344" y2="210" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="740" y="203" text-anchor="middle" fill="#A7F3D0" font-size="11">user（含 LockedUntil / LoginFailCount / PasswordChangedAt）</text>
+
+  <!-- M4: AuthController self-check (lock) -->
+  <path d="M344,232 L395,232 L395,250 L344,250" stroke="#F59E0B" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="410" y="237" fill="#FDE68A" font-size="11" font-weight="600">③ LockedUntil &gt; UtcNow ?</text>
+  <text x="410" y="251" fill="#F87171" font-size="10">YES → return 400 "账号已锁定，请在 X 分钟后重试"</text>
+
+  <!-- M5: AuthController → AuthService -->
+  <line x1="344" y1="275" x2="536" y2="275" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="440" y="268" text-anchor="middle" fill="#E8ECF4" font-size="11">④ LoginAsync(loginDto)</text>
+
+  <!-- M6: AuthService → DB -->
+  <line x1="544" y1="305" x2="1136" y2="305" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="840" y="298" text-anchor="middle" fill="#E8ECF4" font-size="11">⑤ GetByEmailAsync(email)</text>
+
+  <!-- M7: DB → AuthService -->
+  <line x1="1136" y1="330" x2="544" y2="330" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="840" y="323" text-anchor="middle" fill="#A7F3D0" font-size="11">user</text>
+
+  <!-- M8: AuthService → PasswordService -->
+  <line x1="544" y1="360" x2="736" y2="360" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="640" y="353" text-anchor="middle" fill="#E8ECF4" font-size="11">⑥ Verify(password, PasswordHash)</text>
+
+  <!-- M9: PasswordService → AuthService (return) -->
+  <line x1="736" y1="385" x2="544" y2="385" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="640" y="378" text-anchor="middle" fill="#A7F3D0" font-size="11">bool（BCrypt 内置恒定时间比较）</text>
+
+  <!-- Note: verify failure -->
+  <path d="M544,410 L595,410 L595,428 L544,428" stroke="#F87171" stroke-width="1.5" fill="none" marker-end="url(#arrR)"/>
+  <text x="610" y="415" fill="#F87171" font-size="11" font-weight="600">⑦ !valid → throw UnauthorizedAccessException</text>
+  <text x="610" y="428" fill="#9CA3AF" font-size="10">（异常向上抛给 AuthController 的 catch）</text>
+
+  <!-- M10: AuthService → JwtService (Access Token) -->
+  <line x1="544" y1="445" x2="936" y2="445" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="740" y="438" text-anchor="middle" fill="#E8ECF4" font-size="11">⑧ GenerateAccessTokenAsync(user)</text>
+
+  <line x1="936" y1="470" x2="544" y2="470" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="740" y="463" text-anchor="middle" fill="#A7F3D0" font-size="11">AccessToken（30min · sub/email/jti/roles/permissions）</text>
+
+  <!-- M11: AuthService → JwtService (Refresh Token) -->
+  <line x1="544" y1="500" x2="936" y2="500" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="740" y="493" text-anchor="middle" fill="#E8ECF4" font-size="11">⑨ GenerateRefreshToken()</text>
+
+  <line x1="936" y1="525" x2="544" y2="525" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="740" y="518" text-anchor="middle" fill="#A7F3D0" font-size="11">RefreshToken（CSPRNG 32B Base64 · 7d）</text>
+
+  <!-- M12: AuthService → DB persist -->
+  <line x1="544" y1="555" x2="1136" y2="555" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="840" y="548" text-anchor="middle" fill="#E8ECF4" font-size="11">⑩ Users.Update + CommitAsync（RefreshToken + ExpiryTime）</text>
+
+  <line x1="1136" y1="580" x2="544" y2="580" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="840" y="573" text-anchor="middle" fill="#A7F3D0" font-size="11">ok</text>
+
+  <!-- Return: AuthService → AuthController -->
+  <line x1="536" y1="610" x2="344" y2="610" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="440" y="603" text-anchor="middle" fill="#A7F3D0" font-size="11">JwtTokenDto { AccessToken, RefreshToken }</text>
+
+  <!-- M13: AuthController → DB reset -->
+  <line x1="344" y1="640" x2="1136" y2="640" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="740" y="633" text-anchor="middle" fill="#E8ECF4" font-size="11">⑪ LoginFailCount=0, LockedUntil=null + SaveChangesAsync</text>
+
+  <line x1="1136" y1="665" x2="344" y2="665" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="740" y="658" text-anchor="middle" fill="#A7F3D0" font-size="11">ok</text>
+
+  <!-- M14: AuthController self -->
+  <path d="M344,685 L395,685 L395,705 L344,705" stroke="#5A6788" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="410" y="690" fill="#E8ECF4" font-size="11">⑫ UserOnline(id, name, clientIp)</text>
+  <text x="410" y="704" fill="#9CA3AF" font-size="10">+ 密码过期判断（PasswordChangedAt + ExpirationDays=90）</text>
+
+  <!-- M15: AuthController → Client (final) -->
+  <line x1="336" y1="735" x2="144" y2="735" stroke="#10B981" stroke-width="2" marker-end="url(#arrG)"/>
+  <text x="240" y="728" text-anchor="middle" fill="#A7F3D0" font-size="11" font-weight="600">⑬ 200 OK { AccessToken, RefreshToken, RequireCaptcha, MustChangePassword }</text>
+
+  <!-- Failure path sidebar (right) -->
+  <g>
+    <rect x="1250" y="395" width="140" height="220" rx="6" fill="#3B0A0A" stroke="#F87171" stroke-dasharray="4 3"/>
+    <text x="1320" y="414" text-anchor="middle" fill="#FCA5A5" font-size="11" font-weight="600">失败路径</text>
+    <text x="1320" y="432" text-anchor="middle" fill="#FCA5A5" font-size="10">catch</text>
+    <text x="1320" y="446" text-anchor="middle" fill="#FCA5A5" font-size="10">(UnauthorizedAccess</text>
+    <text x="1320" y="460" text-anchor="middle" fill="#FCA5A5" font-size="10">Exception)</text>
+    <line x1="1260" y1="468" x2="1380" y2="468" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1320" y="485" text-anchor="middle" fill="#FDE68A" font-size="10">user.LoginFail</text>
+    <text x="1320" y="499" text-anchor="middle" fill="#FDE68A" font-size="10">Count++</text>
+    <text x="1320" y="519" text-anchor="middle" fill="#FDE68A" font-size="10">if &gt;= 5:</text>
+    <text x="1320" y="533" text-anchor="middle" fill="#FDE68A" font-size="10">LockedUntil =</text>
+    <text x="1320" y="547" text-anchor="middle" fill="#FDE68A" font-size="10">UtcNow + 15min</text>
+    <text x="1320" y="567" text-anchor="middle" fill="#F87171" font-size="10">Update + Save</text>
+    <text x="1320" y="587" text-anchor="middle" fill="#F87171" font-size="10">return 400</text>
+    <text x="1320" y="605" text-anchor="middle" fill="#9CA3AF" font-size="9">"邮箱或密码错误"</text>
+    <text x="1320" y="617" text-anchor="middle" fill="#9CA3AF" font-size="9">或"账户已锁定 15 分钟"</text>
+  </g>
+
+  <!-- Legend -->
+  <g>
+    <rect x="40" y="780" width="1320" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="802" fill="#6B7280" font-size="11">图例：</text>
+    <line x1="105" y1="798" x2="135" y2="798" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/><text x="143" y="802" fill="#C8D0E0" font-size="11">同步调用</text>
+    <line x1="220" y1="798" x2="250" y2="798" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/><text x="258" y="802" fill="#C8D0E0" font-size="11">返回</text>
+    <line x1="305" y1="798" x2="335" y2="798" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/><text x="343" y="802" fill="#C8D0E0" font-size="11">跨边界/DB</text>
+    <rect x="425" y="793" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="445" y="802" fill="#C8D0E0" font-size="11">服务层</text>
+    <text x="510" y="802" fill="#9CA3AF" font-size="11">设计要点：双令牌签发（Access 30min + Refresh 7d）；BCrypt 恒定时间比较防时序攻击；失败 5 次锁 15 分钟；UserOnline 用于在线用户/强制下线</text>
+  </g>
 </svg>

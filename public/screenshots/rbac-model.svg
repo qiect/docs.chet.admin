@@ -1,7 +1,164 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1E40AF"/>
+      <stop offset="1" stop-color="#0B2A8C"/>
+    </linearGradient>
+    <linearGradient id="hdrJ" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6D28D9"/>
+      <stop offset="1" stop-color="#4C1D95"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <!-- canvas -->
+  <rect width="1300" height="700" fill="#11151F"/>
+  <rect x="1" y="1" width="1298" height="698" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">rbac-model</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <!-- title -->
+  <text x="650" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">RBAC 数据模型 ER 图</text>
+  <text x="650" y="56" text-anchor="middle" fill="#4A5366" font-size="12">用户·角色·菜单·部门 主表 + 3 张关联表 · 用户不直接拥有权限，通过角色间接拥有</text>
+
+  <!-- ============ USERS ============ -->
+  <g>
+    <rect x="40" y="80" width="210" height="152" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="40" y="80" width="210" height="32" rx="8" fill="url(#hdr)"/>
+    <rect x="40" y="104" width="210" height="8" fill="url(#hdr)"/>
+    <text x="145" y="101" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">Users</text>
+    <!-- fields -->
+    <circle cx="56" cy="124" r="3" fill="#FBBF24"/><text x="66" y="128" fill="#FBBF24" font-size="12" font-weight="600">Id</text><text x="236" y="128" text-anchor="end" fill="#6B7280" font-size="11">int · PK</text>
+    <circle cx="56" cy="146" r="3" fill="#4A5366"/><text x="66" y="150" fill="#C8D0E0" font-size="12">Name</text><text x="236" y="150" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="56" cy="168" r="3" fill="#4A5366"/><text x="66" y="172" fill="#C8D0E0" font-size="12">Email</text><text x="236" y="172" text-anchor="end" fill="#6B7280" font-size="11">nvarchar · UQ</text>
+    <circle cx="56" cy="190" r="3" fill="#4A5366"/><text x="66" y="194" fill="#6B7280" font-size="12">PasswordHash</text><text x="236" y="194" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="56" cy="212" r="3" fill="#34D399"/><text x="66" y="216" fill="#34D399" font-size="12">DepartmentId</text><text x="236" y="216" text-anchor="end" fill="#6B7280" font-size="11">int? · FK</text>
+  </g>
+
+  <!-- ============ UserRoles (junction) ============ -->
+  <g>
+    <rect x="285" y="104" width="210" height="88" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="285" y="104" width="210" height="32" rx="8" fill="url(#hdrJ)"/>
+    <rect x="285" y="128" width="210" height="8" fill="url(#hdrJ)"/>
+    <text x="390" y="125" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">UserRoles</text>
+    <circle cx="301" cy="152" r="3" fill="#34D399"/><text x="311" y="156" fill="#34D399" font-size="12">UserId</text><text x="481" y="156" text-anchor="end" fill="#6B7280" font-size="11">FK · PK</text>
+    <circle cx="301" cy="174" r="3" fill="#34D399"/><text x="311" y="178" fill="#34D399" font-size="12">RoleId</text><text x="481" y="178" text-anchor="end" fill="#6B7280" font-size="11">FK · PK</text>
+  </g>
+
+  <!-- ============ Roles ============ -->
+  <g>
+    <rect x="530" y="80" width="210" height="176" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="530" y="80" width="210" height="32" rx="8" fill="url(#hdr)"/>
+    <rect x="530" y="104" width="210" height="8" fill="url(#hdr)"/>
+    <text x="635" y="101" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">Roles</text>
+    <circle cx="546" cy="124" r="3" fill="#FBBF24"/><text x="556" y="128" fill="#FBBF24" font-size="12" font-weight="600">Id</text><text x="726" y="128" text-anchor="end" fill="#6B7280" font-size="11">int · PK</text>
+    <circle cx="546" cy="146" r="3" fill="#4A5366"/><text x="556" y="150" fill="#C8D0E0" font-size="12">Code</text><text x="726" y="150" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="546" cy="168" r="3" fill="#4A5366"/><text x="556" y="172" fill="#C8D0E0" font-size="12">Name</text><text x="726" y="172" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="546" cy="190" r="3" fill="#F472B6"/><text x="556" y="194" fill="#F472B6" font-size="12" font-weight="600">★ DataScope</text><text x="726" y="194" text-anchor="end" fill="#6B7280" font-size="11">All/Dept/..</text>
+    <circle cx="546" cy="212" r="3" fill="#4A5366"/><text x="556" y="216" fill="#C8D0E0" font-size="12">Sort</text><text x="726" y="216" text-anchor="end" fill="#6B7280" font-size="11">int</text>
+    <circle cx="546" cy="234" r="3" fill="#4A5366"/><text x="556" y="238" fill="#C8D0E0" font-size="12">IsEnabled</text><text x="726" y="238" text-anchor="end" fill="#6B7280" font-size="11">bool</text>
+  </g>
+
+  <!-- ============ RoleMenus (junction) ============ -->
+  <g>
+    <rect x="775" y="104" width="210" height="88" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="775" y="104" width="210" height="32" rx="8" fill="url(#hdrJ)"/>
+    <rect x="775" y="128" width="210" height="8" fill="url(#hdrJ)"/>
+    <text x="880" y="125" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">RoleMenus</text>
+    <circle cx="791" cy="152" r="3" fill="#34D399"/><text x="801" y="156" fill="#34D399" font-size="12">RoleId</text><text x="971" y="156" text-anchor="end" fill="#6B7280" font-size="11">FK · PK</text>
+    <circle cx="791" cy="174" r="3" fill="#34D399"/><text x="801" y="178" fill="#34D399" font-size="12">MenuId</text><text x="971" y="178" text-anchor="end" fill="#6B7280" font-size="11">FK · PK</text>
+  </g>
+
+  <!-- ============ Menus ============ -->
+  <g>
+    <rect x="1020" y="80" width="240" height="176" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="1020" y="80" width="240" height="32" rx="8" fill="url(#hdr)"/>
+    <rect x="1020" y="104" width="240" height="8" fill="url(#hdr)"/>
+    <text x="1140" y="101" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">Menus</text>
+    <circle cx="1036" cy="124" r="3" fill="#FBBF24"/><text x="1046" y="128" fill="#FBBF24" font-size="12" font-weight="600">Id</text><text x="1246" y="128" text-anchor="end" fill="#6B7280" font-size="11">int · PK</text>
+    <circle cx="1036" cy="146" r="3" fill="#4A5366"/><text x="1046" y="150" fill="#C8D0E0" font-size="12">Name / Path / Component</text><text x="1246" y="150" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="1036" cy="168" r="3" fill="#F472B6"/><text x="1046" y="172" fill="#F472B6" font-size="12" font-weight="600">★ Type</text><text x="1246" y="172" text-anchor="end" fill="#6B7280" font-size="11">Dir/Menu/Btn/Api</text>
+    <circle cx="1036" cy="190" r="3" fill="#F472B6"/><text x="1046" y="194" fill="#F472B6" font-size="12" font-weight="600">★ Permission</text><text x="1246" y="194" text-anchor="end" fill="#6B7280" font-size="11">system:user:*</text>
+    <circle cx="1036" cy="212" r="3" fill="#4A5366"/><text x="1046" y="216" fill="#C8D0E0" font-size="12">Sort / IsVisible</text><text x="1246" y="216" text-anchor="end" fill="#6B7280" font-size="11">int/bool</text>
+    <circle cx="1036" cy="234" r="3" fill="#34D399"/><text x="1046" y="238" fill="#34D399" font-size="12">ParentId</text><text x="1246" y="238" text-anchor="end" fill="#6B7280" font-size="11">int · FK(self)</text>
+  </g>
+
+  <!-- ============ Departments ============ -->
+  <g>
+    <rect x="40" y="455" width="210" height="152" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="40" y="455" width="210" height="32" rx="8" fill="url(#hdr)"/>
+    <rect x="40" y="479" width="210" height="8" fill="url(#hdr)"/>
+    <text x="145" y="476" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">Departments</text>
+    <circle cx="56" cy="499" r="3" fill="#FBBF24"/><text x="66" y="503" fill="#FBBF24" font-size="12" font-weight="600">Id</text><text x="236" y="503" text-anchor="end" fill="#6B7280" font-size="11">int · PK</text>
+    <circle cx="56" cy="521" r="3" fill="#4A5366"/><text x="66" y="525" fill="#C8D0E0" font-size="12">Name / Code</text><text x="236" y="525" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="56" cy="543" r="3" fill="#4A5366"/><text x="66" y="547" fill="#C8D0E0" font-size="12">Leader / Phone</text><text x="236" y="547" text-anchor="end" fill="#6B7280" font-size="11">nvarchar</text>
+    <circle cx="56" cy="565" r="3" fill="#34D399"/><text x="66" y="569" fill="#34D399" font-size="12">ParentId</text><text x="236" y="569" text-anchor="end" fill="#6B7280" font-size="11">int · FK(self)</text>
+    <circle cx="56" cy="587" r="3" fill="#4A5366"/><text x="66" y="591" fill="#C8D0E0" font-size="12">Sort / IsEnabled</text><text x="236" y="591" text-anchor="end" fill="#6B7280" font-size="11">int/bool</text>
+  </g>
+
+  <!-- ============ RoleDataScopeDepts (junction) ============ -->
+  <g>
+    <rect x="530" y="455" width="210" height="110" rx="8" fill="url(#bg)" stroke="#2A3550"/>
+    <rect x="530" y="455" width="210" height="32" rx="8" fill="url(#hdrJ)"/>
+    <rect x="530" y="479" width="210" height="8" fill="url(#hdrJ)"/>
+    <text x="635" y="476" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">RoleDataScopeDepts</text>
+    <circle cx="546" cy="503" r="3" fill="#FBBF24"/><text x="556" y="507" fill="#FBBF24" font-size="12" font-weight="600">Id</text><text x="726" y="507" text-anchor="end" fill="#6B7280" font-size="11">int · PK</text>
+    <circle cx="546" cy="525" r="3" fill="#34D399"/><text x="556" y="529" fill="#34D399" font-size="12">RoleId</text><text x="726" y="529" text-anchor="end" fill="#6B7280" font-size="11">int · FK</text>
+    <circle cx="546" cy="547" r="3" fill="#34D399"/><text x="556" y="551" fill="#34D399" font-size="12">DepartmentId</text><text x="726" y="551" text-anchor="end" fill="#6B7280" font-size="11">int · FK</text>
+  </g>
+
+  <!-- ============ Relationships ============ -->
+  <g stroke-width="1.5" fill="none">
+    <!-- Users 1—N UserRoles -->
+    <line x1="250" y1="148" x2="285" y2="148" stroke="#3B82F6"/>
+    <!-- UserRoles N—1 Roles -->
+    <line x1="495" y1="148" x2="530" y2="148" stroke="#3B82F6"/>
+    <!-- Roles 1—N RoleMenus -->
+    <line x1="740" y1="168" x2="775" y2="148" stroke="#3B82F6"/>
+    <!-- RoleMenus N—1 Menus -->
+    <line x1="985" y1="148" x2="1020" y2="168" stroke="#3B82F6"/>
+    <!-- Users N—1 Departments (vertical) -->
+    <line x1="145" y1="232" x2="145" y2="455" stroke="#3B82F6"/>
+    <!-- Roles 1—N RoleDataScopeDepts (vertical) -->
+    <line x1="635" y1="256" x2="635" y2="455" stroke="#3B82F6"/>
+    <!-- Departments 1—N RoleDataScopeDepts -->
+    <line x1="250" y1="510" x2="530" y2="525" stroke="#3B82F6"/>
+  </g>
+
+  <!-- cardinality labels -->
+  <g font-size="11" font-weight="700" fill="#60A5FA">
+    <text x="256" y="143">1</text><text x="276" y="143">N</text>
+    <text x="501" y="143">N</text><text x="521" y="143">1</text>
+    <text x="746" y="160">1</text><text x="766" y="160">N</text>
+    <text x="991" y="160">N</text><text x="1011" y="160">1</text>
+    <text x="153" y="244">N</text><text x="153" y="449">1</text>
+    <text x="643" y="268">1</text><text x="643" y="449">N</text>
+    <text x="258" y="505">1</text><text x="514" y="520">N</text>
+  </g>
+
+  <!-- self-reference loops -->
+  <g fill="none" stroke="#F472B6" stroke-width="1.5" stroke-dasharray="4 3">
+    <!-- Menus.ParentId self -->
+    <path d="M1260,124 C1290,124 1290,234 1260,234"/>
+    <text x="1283" y="183" fill="#F472B6" font-size="10" text-anchor="middle">self</text>
+    <!-- Departments.ParentId self -->
+    <path d="M250,499 C282,499 282,565 250,565"/>
+    <text x="274" y="538" fill="#F472B6" font-size="10" text-anchor="middle">self</text>
+  </g>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="40" y="628" width="1220" height="52" rx="8" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="650" fill="#6B7280" font-size="11">图例：</text>
+    <circle cx="115" cy="646" r="3" fill="#FBBF24"/><text x="125" y="650" fill="#C8D0E0" font-size="11">PK 主键</text>
+    <circle cx="195" cy="646" r="3" fill="#34D399"/><text x="205" y="650" fill="#C8D0E0" font-size="11">FK 外键</text>
+    <circle cx="275" cy="646" r="3" fill="#F472B6"/><text x="285" y="650" fill="#C8D0E0" font-size="11">★ 关键设计字段</text>
+    <line x1="395" y1="646" x2="425" y2="646" stroke="#3B82F6" stroke-width="1.5"/><text x="395" y="638" fill="#60A5FA" font-size="10">1</text><text x="418" y="638" fill="#60A5FA" font-size="10">N</text><text x="435" y="650" fill="#C8D0E0" font-size="11">一对多关系</text>
+    <path d="M555,640 C575,640 575,652 555,652" fill="none" stroke="#F472B6" stroke-width="1.5" stroke-dasharray="4 3"/><text x="585" y="650" fill="#C8D0E0" font-size="11">自关联（树结构）</text>
+
+    <text x="60" y="672" fill="#9CA3AF" font-size="11">关键设计：</text>
+    <text x="135" y="672" fill="#C8D0E0" font-size="11">① 用户↔角色↔菜单 均 N:N，通过关联表解耦   ② DataScope 挂在 Role 上（非菜单权限）   ③ Custom 范围通过 RoleDataScopeDepts 精细指定可见部门</text>
+  </g>
 </svg>

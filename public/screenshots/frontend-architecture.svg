@@ -1,7 +1,185 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <rect width="1100" height="750" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="748" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">frontend-architecture</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <defs>
+    <symbol id="folder" viewBox="0 0 14 11">
+      <path d="M0,2 L5,2 L7,0 L14,0 L14,11 L0,11 Z" fill="#60A5FA"/>
+    </symbol>
+  </defs>
+
+  <text x="550" y="48" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">前端 Monorepo 架构</text>
+  <text x="550" y="70" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin.Web · pnpm Workspace · Vben Admin v5.7</text>
+
+  <g font-size="13">
+    <g stroke="#2A3550" stroke-width="1">
+      <line x1="67" y1="110" x2="67" y2="585"/>
+      <line x1="93" y1="130" x2="93" y2="145"/>
+      <line x1="119" y1="150" x2="119" y2="165"/>
+      <line x1="145" y1="170" x2="145" y2="305"/>
+      <line x1="93" y1="330" x2="93" y2="465"/>
+      <line x1="119" y1="350" x2="119" y2="425"/>
+      <line x1="119" y1="470" x2="119" y2="565"/>
+      <line x1="93" y1="590" x2="93" y2="685"/>
+    </g>
+
+    <g stroke="#2A3550" stroke-width="1">
+      <line x1="67" y1="125" x2="86" y2="125"/>
+      <line x1="67" y1="325" x2="86" y2="325"/>
+      <line x1="67" y1="585" x2="86" y2="585"/>
+      <line x1="93" y1="145" x2="112" y2="145"/>
+      <line x1="119" y1="165" x2="138" y2="165"/>
+      <line x1="145" y1="185" x2="164" y2="185"/>
+      <line x1="145" y1="205" x2="164" y2="205"/>
+      <line x1="145" y1="225" x2="164" y2="225"/>
+      <line x1="145" y1="245" x2="164" y2="245"/>
+      <line x1="145" y1="265" x2="164" y2="265"/>
+      <line x1="145" y1="285" x2="164" y2="285"/>
+      <line x1="145" y1="305" x2="164" y2="305"/>
+      <line x1="93" y1="345" x2="112" y2="345"/>
+      <line x1="93" y1="445" x2="112" y2="445"/>
+      <line x1="93" y1="465" x2="112" y2="465"/>
+      <line x1="119" y1="365" x2="138" y2="365"/>
+      <line x1="119" y1="385" x2="138" y2="385"/>
+      <line x1="119" y1="405" x2="138" y2="405"/>
+      <line x1="119" y1="425" x2="138" y2="425"/>
+      <line x1="119" y1="485" x2="138" y2="485"/>
+      <line x1="119" y1="505" x2="138" y2="505"/>
+      <line x1="119" y1="525" x2="138" y2="525"/>
+      <line x1="119" y1="545" x2="138" y2="545"/>
+      <line x1="119" y1="565" x2="138" y2="565"/>
+      <line x1="93" y1="605" x2="112" y2="605"/>
+      <line x1="93" y1="625" x2="112" y2="625"/>
+      <line x1="93" y1="645" x2="112" y2="645"/>
+      <line x1="93" y1="665" x2="112" y2="665"/>
+      <line x1="93" y1="685" x2="112" y2="685"/>
+    </g>
+
+    <use href="#folder" x="60" y="96" width="14" height="11"/>
+    <text x="80" y="105" fill="#60A5FA" font-weight="700">Chet.Admin.Web/</text>
+    <text x="380" y="105" fill="#6B7280" font-size="12">pnpm monorepo 根目录</text>
+
+    <use href="#folder" x="86" y="116" width="14" height="11"/>
+    <text x="106" y="125" fill="#60A5FA" font-weight="600">apps/</text>
+    <text x="380" y="125" fill="#6B7280" font-size="12">应用层</text>
+
+    <use href="#folder" x="112" y="136" width="14" height="11"/>
+    <text x="132" y="145" fill="#60A5FA" font-weight="600">web-antd/</text>
+    <text x="380" y="145" fill="#6B7280" font-size="12">主应用 (Ant Design Vue)</text>
+
+    <use href="#folder" x="138" y="156" width="14" height="11"/>
+    <text x="158" y="165" fill="#60A5FA" font-weight="600">src/</text>
+    <text x="380" y="165" fill="#6B7280" font-size="12">应用源码</text>
+
+    <use href="#folder" x="164" y="176" width="14" height="11"/>
+    <text x="184" y="185" fill="#60A5FA" font-weight="600">api/</text>
+    <text x="380" y="185" fill="#6B7280" font-size="12">API 请求层 (core + system)</text>
+
+    <use href="#folder" x="164" y="196" width="14" height="11"/>
+    <text x="184" y="205" fill="#60A5FA" font-weight="600">views/</text>
+    <text x="380" y="205" fill="#6B7280" font-size="12">页面 (dashboard / system / _core)</text>
+
+    <use href="#folder" x="164" y="216" width="14" height="11"/>
+    <text x="184" y="225" fill="#60A5FA" font-weight="600">store/</text>
+    <text x="380" y="225" fill="#6B7280" font-size="12">Pinia 状态管理</text>
+
+    <use href="#folder" x="164" y="236" width="14" height="11"/>
+    <text x="184" y="245" fill="#60A5FA" font-weight="600">router/</text>
+    <text x="380" y="245" fill="#6B7280" font-size="12">动态路由 + 权限守卫</text>
+
+    <use href="#folder" x="164" y="256" width="14" height="11"/>
+    <text x="184" y="265" fill="#60A5FA" font-weight="600">composables/</text>
+    <text x="380" y="265" fill="#6B7280" font-size="12">组合式函数 (useDict 等)</text>
+
+    <use href="#folder" x="164" y="276" width="14" height="11"/>
+    <text x="184" y="285" fill="#60A5FA" font-weight="600">layouts/</text>
+    <text x="380" y="285" fill="#6B7280" font-size="12">布局组件</text>
+
+    <use href="#folder" x="164" y="296" width="14" height="11"/>
+    <text x="184" y="305" fill="#60A5FA" font-weight="600">adapter/</text>
+    <text x="380" y="305" fill="#6B7280" font-size="12">组件适配器</text>
+
+    <use href="#folder" x="86" y="316" width="14" height="11"/>
+    <text x="106" y="325" fill="#60A5FA" font-weight="600">packages/</text>
+    <text x="380" y="325" fill="#6B7280" font-size="12">核心包</text>
+
+    <use href="#folder" x="112" y="336" width="14" height="11"/>
+    <text x="132" y="345" fill="#60A5FA" font-weight="600">@core/</text>
+    <text x="380" y="345" fill="#6B7280" font-size="12">核心能力</text>
+
+    <use href="#folder" x="138" y="356" width="14" height="11"/>
+    <text x="158" y="365" fill="#60A5FA" font-weight="600">base/</text>
+    <text x="380" y="365" fill="#6B7280" font-size="12">design / icons / shared / typings</text>
+
+    <use href="#folder" x="138" y="376" width="14" height="11"/>
+    <text x="158" y="385" fill="#60A5FA" font-weight="600">composables/</text>
+    <text x="380" y="385" fill="#6B7280" font-size="12">组合式函数</text>
+
+    <use href="#folder" x="138" y="396" width="14" height="11"/>
+    <text x="158" y="405" fill="#60A5FA" font-weight="600">preferences/</text>
+    <text x="380" y="405" fill="#6B7280" font-size="12">偏好设置</text>
+
+    <use href="#folder" x="138" y="416" width="14" height="11"/>
+    <text x="158" y="425" fill="#60A5FA" font-weight="600">ui-kit/</text>
+    <text x="380" y="425" fill="#6B7280" font-size="12">form / layout / menu / popup / shadcn</text>
+
+    <use href="#folder" x="112" y="436" width="14" height="11"/>
+    <text x="132" y="445" fill="#60A5FA" font-weight="600">constants/</text>
+    <text x="380" y="445" fill="#6B7280" font-size="12">常量定义</text>
+
+    <use href="#folder" x="112" y="456" width="14" height="11"/>
+    <text x="132" y="465" fill="#60A5FA" font-weight="600">effects/</text>
+    <text x="380" y="465" fill="#6B7280" font-size="12">效果层</text>
+
+    <use href="#folder" x="138" y="476" width="14" height="11"/>
+    <text x="158" y="485" fill="#60A5FA" font-weight="600">access/</text>
+    <text x="380" y="485" fill="#6B7280" font-size="12">权限控制 (指令 + 组件)</text>
+
+    <use href="#folder" x="138" y="496" width="14" height="11"/>
+    <text x="158" y="505" fill="#60A5FA" font-weight="600">common-ui/</text>
+    <text x="380" y="505" fill="#6B7280" font-size="12">通用 UI (about / fallback / profile)</text>
+
+    <use href="#folder" x="138" y="516" width="14" height="11"/>
+    <text x="158" y="525" fill="#60A5FA" font-weight="600">hooks/</text>
+    <text x="380" y="525" fill="#6B7280" font-size="12">业务 Hooks (watermark / tabs / pagination)</text>
+
+    <use href="#folder" x="138" y="536" width="14" height="11"/>
+    <text x="158" y="545" fill="#60A5FA" font-weight="600">layouts/</text>
+    <text x="380" y="545" fill="#6B7280" font-size="12">布局 (basic / authentication)</text>
+
+    <use href="#folder" x="138" y="556" width="14" height="11"/>
+    <text x="158" y="565" fill="#60A5FA" font-weight="600">plugins/</text>
+    <text x="380" y="565" fill="#6B7280" font-size="12">插件 (echarts)</text>
+
+    <use href="#folder" x="86" y="576" width="14" height="11"/>
+    <text x="106" y="585" fill="#60A5FA" font-weight="600">internal/</text>
+    <text x="380" y="585" fill="#6B7280" font-size="12">内部工具</text>
+
+    <use href="#folder" x="112" y="596" width="14" height="11"/>
+    <text x="132" y="605" fill="#60A5FA" font-weight="600">lint-configs/</text>
+    <text x="380" y="605" fill="#6B7280" font-size="12">eslint / oxlint / stylelint / commitlint</text>
+
+    <use href="#folder" x="112" y="616" width="14" height="11"/>
+    <text x="132" y="625" fill="#60A5FA" font-weight="600">node-utils/</text>
+    <text x="380" y="625" fill="#6B7280" font-size="12">Node 工具函数</text>
+
+    <use href="#folder" x="112" y="636" width="14" height="11"/>
+    <text x="132" y="645" fill="#60A5FA" font-weight="600">tailwind-config/</text>
+    <text x="380" y="645" fill="#6B7280" font-size="12">Tailwind 配置</text>
+
+    <use href="#folder" x="112" y="656" width="14" height="11"/>
+    <text x="132" y="665" fill="#60A5FA" font-weight="600">tsconfig/</text>
+    <text x="380" y="665" fill="#6B7280" font-size="12">TS 配置</text>
+
+    <use href="#folder" x="112" y="676" width="14" height="11"/>
+    <text x="132" y="685" fill="#60A5FA" font-weight="600">vite-config/</text>
+    <text x="380" y="685" fill="#6B7280" font-size="12">Vite 配置</text>
+  </g>
+
+  <g font-size="11">
+    <use href="#folder" x="60" y="716" width="14" height="11"/>
+    <text x="80" y="725" fill="#9CA3AF">目录</text>
+    <text x="120" y="725" fill="#4A5366">·  所有包通过 pnpm workspace 协议共享依赖，根 package.json 统一管理版本</text>
+  </g>
 </svg>

@@ -1,7 +1,181 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A1A45"/>
+      <stop offset="1" stop-color="#1E1230"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06281F"/>
+      <stop offset="1" stop-color="#031A14"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A33"/>
+      <stop offset="1" stop-color="#08191F"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A2A0E"/>
+      <stop offset="1" stop-color="#241808"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A1414"/>
+      <stop offset="1" stop-color="#1A0C0C"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#EF4444"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="720" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="718" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">online-user-architecture</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">在线用户架构 · Online User Architecture</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin · ConcurrentDictionary 双字典 + Token 签发时间校验撤销 JWT</text>
+
+  <!-- Pipeline band -->
+  <rect x="40" y="74" width="1020" height="56" rx="8" fill="#0E1525" stroke="#1F2A44"/>
+  <text x="52" y="92" fill="#5A6788" font-size="11">① Request Pipeline · 中间件管道（位于认证之后）</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <rect x="60" y="100" width="70" height="24" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="95" y="116" text-anchor="middle">Client</text>
+    <line x1="132" y1="112" x2="156" y2="112" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="158" y="100" width="120" height="24" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="218" y="116" text-anchor="middle">Auth (JWT)</text>
+    <line x1="280" y1="112" x2="304" y2="112" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="306" y="100" width="140" height="24" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="376" y="116" text-anchor="middle">AuditLog</text>
+    <line x1="448" y1="112" x2="472" y2="112" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="474" y="96" width="220" height="32" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="2"/>
+    <text x="584" y="116" text-anchor="middle" fill="#67E8F9" font-weight="600">OnlineUserTrackingMiddleware ★</text>
+    <line x1="696" y1="112" x2="720" y2="112" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <rect x="722" y="100" width="150" height="24" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="797" y="116" text-anchor="middle">MapControllers</text>
+    <text x="890" y="116" fill="#4A5366" font-size="9.5">await _next → 之后 UpdateActivity</text>
+  </g>
+
+  <!-- Tracking flow (left) -->
+  <rect x="40" y="146" width="510" height="188" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="56" y="166" fill="#67E8F9" font-size="12.5" font-weight="600">② 在线追踪链路 · Tracking</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <rect x="56" y="178" width="478" height="28" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="66" y="196">[HttpGet] OnlineUsersController.GetOnlineUsers()</text>
+
+    <rect x="56" y="214" width="478" height="44" rx="4" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="66" y="231" fill="#DDD6FE">GetOnlineUsers()</text>
+    <text x="66" y="247" fill="#A78BFA" font-size="9.5">清理 &gt;30min 未活跃（懒清理）→ OrderBy LastActiveTime</text>
+
+    <rect x="56" y="266" width="478" height="44" rx="4" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="66" y="283" fill="#DDD6FE">UpdateActivity(userId) — 每次请求后刷新</text>
+    <text x="66" y="299" fill="#A78BFA" font-size="9.5">TryGetValue → info.LastActiveTime = UtcNow</text>
+
+    <text x="56" y="324" fill="#67E8F9" font-size="10">登录时：UserOnline(userId,userName,ip) → AddOrUpdate + RemoveFromBlacklist</text>
+  </g>
+
+  <!-- Force offline flow (right) -->
+  <rect x="560" y="146" width="500" height="188" rx="8" fill="url(#redGrad)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="576" y="166" fill="#FCA5A5" font-size="12.5" font-weight="600">③ 强制下线链路 · Force Offline（三重保险）</text>
+  <g font-size="10.5" fill="#FECACA">
+    <rect x="576" y="178" width="468" height="28" rx="4" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="586" y="196">[HttpDelete("{userId}")] ForceOffline</text>
+
+    <rect x="576" y="214" width="468" height="44" rx="4" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="586" y="231" fill="#DDD6FE">OnlineUserService.ForceOffline(userId)</text>
+    <text x="586" y="247" fill="#A78BFA" font-size="9.5">① _onlineUsers.TryRemove + ② _revokedUsers.AddOrUpdate(UtcNow)</text>
+
+    <rect x="576" y="266" width="468" height="44" rx="4" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="586" y="283" fill="#6EE7B7">③ 清 DB RefreshToken（防刷新换新 Token）</text>
+    <text x="586" y="299" fill="#5C8C7A" font-size="9.5">user.RefreshToken=null · ExpiryTime=null → SaveChangesAsync</text>
+
+    <text x="576" y="324" fill="#FCA5A5" font-size="10">结果：Access Token 失效 + 无法刷新 + 列表移除 → 必须重新登录</text>
+  </g>
+
+  <!-- JWT validation band -->
+  <rect x="40" y="348" width="1020" height="138" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="56" y="368" fill="#67E8F9" font-size="12.5" font-weight="600">④ JWT 校验 · JwtConfiguration.OnTokenValidated</text>
+  <text x="56" y="384" fill="#5A6788" font-size="10">每次带 Token 请求触发；从 DI 解析 IOnlineUserService 调用 IsTokenRevoked</text>
+
+  <g font-size="10.5" fill="#C7D0E0">
+    <rect x="56" y="394" width="478" height="34" rx="5" fill="#08191F" stroke="#06B6D4"/>
+    <text x="66" y="411" fill="#67E8F9">IsTokenRevoked(userId, jwtToken.ValidFrom)</text>
+    <text x="66" y="423" fill="#5A6788" font-size="9.5">CleanupExpiredBlacklist → 比较 issuedUtc &lt; revokedAt</text>
+
+    <rect x="560" y="394" width="484" height="34" rx="5" fill="url(#redGrad)" stroke="#EF4444"/>
+    <text x="570" y="411" fill="#FCA5A5">若已被吊销 → context.Fail("Token has been revoked")</text>
+    <text x="570" y="423" fill="#9C7C7C" font-size="9.5">返回 401，用户被踢出</text>
+
+    <!-- Timeline -->
+    <text x="56" y="448" fill="#5A6788" font-size="10">时间轴 · Timeline</text>
+    <line x1="56" y1="464" x2="1044" y2="464" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <circle cx="200" cy="464" r="4" fill="#60A5FA"/>
+    <text x="200" y="478" text-anchor="middle" fill="#93C5FD" font-size="9.5">Token A 签发</text>
+    <circle cx="500" cy="464" r="5" fill="#EF4444"/>
+    <text x="500" y="478" text-anchor="middle" fill="#FCA5A5" font-size="9.5">强制下线（吊销时间）</text>
+    <circle cx="820" cy="464" r="4" fill="#10B981"/>
+    <text x="820" y="478" text-anchor="middle" fill="#6EE7B7" font-size="9.5">Token B 签发（重新登录）</text>
+    <text x="200" y="482" text-anchor="middle" fill="#4A5366" font-size="8.5">签发&lt;吊销=拒绝</text>
+    <text x="820" y="482" text-anchor="middle" fill="#4A5366" font-size="8.5">签发&gt;吊销=放行</text>
+  </g>
+
+  <!-- Dual dictionary + DTO -->
+  <text x="52" y="504" fill="#5A6788" font-size="11">⑤ 内存数据模型 · OnlineUserService（static 字段，跨请求共享，纯内存不落库）</text>
+
+  <rect x="40" y="514" width="330" height="146" rx="8" fill="url(#purpleGrad)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="56" y="534" fill="#DDD6FE" font-size="12" font-weight="600">_onlineUsers</text>
+  <text x="56" y="549" fill="#7C6FB0" font-size="9.5">ConcurrentDictionary&lt;int, OnlineUserDto&gt;</text>
+  <g font-size="10" fill="#E9D5FF">
+    <text x="56" y="572">Key = UserId</text>
+    <text x="56" y="588">Value = OnlineUserDto</text>
+    <text x="56" y="610" fill="#A78BFA" font-size="9.5">AddOrUpdate（登录/重新上线）</text>
+    <text x="56" y="626" fill="#A78BFA" font-size="9.5">TryRemove（下线/强制下线）</text>
+    <text x="56" y="648" fill="#5C8C7A" font-size="9">展示用 · GetOnlineUsers 返回列表</text>
+  </g>
+
+  <rect x="385" y="514" width="330" height="146" rx="8" fill="url(#amberGrad)" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="401" y="534" fill="#FCD34D" font-size="12" font-weight="600">_revokedUsers · 令牌黑名单</text>
+  <text x="401" y="549" fill="#8C6E2E" font-size="9.5">ConcurrentDictionary&lt;int, DateTime&gt;</text>
+  <g font-size="10" fill="#FDE68A">
+    <text x="401" y="572">Key = UserId</text>
+    <text x="401" y="588">Value = 吊销时间 (UTC)</text>
+    <text x="401" y="610" fill="#F59E0B" font-size="9.5">AddOrUpdate（ForceOffline 时写入）</text>
+    <text x="401" y="626" fill="#F59E0B" font-size="9.5">TryRemove（重新登录清除）</text>
+    <text x="401" y="648" fill="#8C6E2E" font-size="9">_blacklistRetention = 2h 自动清理</text>
+  </g>
+
+  <rect x="730" y="514" width="330" height="146" rx="8" fill="url(#greenGrad)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="746" y="534" fill="#6EE7B7" font-size="12" font-weight="600">OnlineUserDto · 字段</text>
+  <text x="746" y="549" fill="#5C8C7A" font-size="9.5">纯内存 DTO · 不存数据库 · 重启清空</text>
+  <g font-size="10" fill="#A7F3D0">
+    <text x="746" y="572">UserId · UserName</text>
+    <text x="746" y="588">ClientIp</text>
+    <text x="746" y="610">LoginTime（登录时记录，不变）</text>
+    <text x="746" y="626">LastActiveTime（每请求刷新）</text>
+    <text x="746" y="648" fill="#5C8C7A" font-size="9">判断活跃 / 30min 超时清理依据</text>
+  </g>
+
+  <!-- Arrows from flows to dictionaries -->
+  <path d="M 220 344 L 220 360 L 200 360 L 200 394" fill="none" stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <path d="M 760 344 L 760 360 L 540 360 L 540 394" fill="none" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+
+  <!-- Legend -->
+  <rect x="40" y="676" width="1020" height="32" rx="6" fill="#161C2B" stroke="#2A3550"/>
+  <g font-size="10.5" fill="#9AA6BF">
+    <rect x="54" y="686" width="12" height="12" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="72" y="696">Controller</text>
+    <rect x="146" y="686" width="12" height="12" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="164" y="696">_onlineUsers</text>
+    <rect x="248" y="686" width="12" height="12" fill="url(#amberGrad)" stroke="#F59E0B"/>
+    <text x="266" y="696">黑名单</text>
+    <rect x="328" y="686" width="12" height="12" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="346" y="696">DTO/DB</text>
+    <rect x="408" y="686" width="12" height="12" fill="url(#redGrad)" stroke="#EF4444"/>
+    <text x="426" y="696">强制下线</text>
+    <text x="498" y="696" fill="#5A6788">双字典内存存储 + 签发时间对比撤销 JWT + 三重保险强制下线 + 懒清理策略</text>
+  </g>
 </svg>

@@ -1,7 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="700" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="698" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">role-assign-menu</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">角色菜单分配流程</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">AssignMenusAsync · 先删后加 · RoleMenus 关联表</text>
+
+  <!-- ============ Spine ============ -->
+  <!-- Start -->
+  <rect x="400" y="78" width="300" height="38" rx="19" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="102" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">点击「分配菜单」按钮</text>
+  <line x1="550" y1="116" x2="550" y2="136" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n1 open modal -->
+  <rect x="400" y="136" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#06B6D4"/>
+  <text x="550" y="160" text-anchor="middle" fill="#CFFAFE" font-size="12">打开分配弹窗 · Tree 组件加载</text>
+  <line x1="550" y1="174" x2="550" y2="194" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n2 fetch -->
+  <rect x="400" y="194" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="218" text-anchor="middle" fill="#E8ECF4" font-size="12">并行请求菜单树 + 角色已有菜单</text>
+  <line x1="550" y1="232" x2="550" y2="252" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <text x="560" y="246" fill="#8B5CF6" font-size="10">HTTP</text>
+
+  <!-- n3 backend tree -->
+  <rect x="400" y="252" width="300" height="44" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="550" y="272" text-anchor="middle" fill="#DDD6FE" font-size="11" font-weight="600">GET /menus/tree + GET /roles/{id}/menus</text>
+  <text x="550" y="288" text-anchor="middle" fill="#A78BFA" font-size="10">返回 MenuDto[] · 含 Directory/Menu/Button/Api</text>
+  <line x1="550" y1="296" x2="550" y2="316" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+
+  <!-- n4 build tree -->
+  <rect x="400" y="316" width="300" height="44" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="336" text-anchor="middle" fill="#E8ECF4" font-size="11">buildMenuTree() 构建前端树</text>
+  <text x="550" y="352" text-anchor="middle" fill="#9CA3AF" font-size="10">按钮节点加 [按钮] 后缀 · checkedKeys 回填</text>
+  <line x1="550" y1="360" x2="550" y2="380" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n5 user check -->
+  <rect x="400" y="380" width="300" height="44" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="400" text-anchor="middle" fill="#E8ECF4" font-size="12">用户勾选/取消勾选节点</text>
+  <text x="550" y="416" text-anchor="middle" fill="#9CA3AF" font-size="10">check-strictly 父子独立勾选</text>
+  <line x1="550" y1="424" x2="550" y2="444" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n6 submit -->
+  <rect x="400" y="444" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="468" text-anchor="middle" fill="#E8ECF4" font-size="12">点击「确定」· POST /roles/{id}/menus</text>
+  <line x1="550" y1="482" x2="550" y2="502" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <text x="560" y="496" fill="#8B5CF6" font-size="10">menuIds[]</text>
+
+  <!-- n7 service -->
+  <rect x="400" y="502" width="300" height="44" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="550" y="522" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">AssignMenusAsync(roleId, menuIds)</text>
+  <text x="550" y="538" text-anchor="middle" fill="#A78BFA" font-size="10">RoleService · 先删后加</text>
+  <line x1="550" y1="546" x2="550" y2="566" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n8 delete old -->
+  <rect x="400" y="566" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#F87171" stroke-dasharray="4 3"/>
+  <text x="550" y="590" text-anchor="middle" fill="#FCA5A5" font-size="11">① 删除旧 RoleMenus（WHERE RoleId）</text>
+  <line x1="550" y1="604" x2="550" y2="624" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n9 add new -->
+  <rect x="400" y="624" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#10B981" stroke-dasharray="4 3"/>
+  <text x="550" y="648" text-anchor="middle" fill="#A7F3D0" font-size="11">② 插入新 RoleMenuEntity · SaveChanges</text>
+
+  <!-- side: success end -->
+  <line x1="700" y1="643" x2="800" y2="643" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+  <rect x="800" y="623" width="260" height="40" rx="20" fill="#064E3B" stroke="#10B981"/>
+  <text x="930" y="648" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">200 OK · 弹窗关闭</text>
+
+  <!-- side annotation left -->
+  <g fill="#4A5366" font-size="10">
+    <text x="60" y="160">前端</text>
+    <text x="60" y="274">后端</text>
+    <text x="60" y="400">用户交互</text>
+    <text x="60" y="524">业务逻辑</text>
+    <text x="60" y="590">① 清旧</text>
+    <text x="60" y="648">② 加新</text>
+  </g>
+  <line x1="100" y1="154" x2="400" y2="154" stroke="#2A3550" stroke-dasharray="3 3"/>
+  <line x1="100" y1="268" x2="400" y2="268" stroke="#2A3550" stroke-dasharray="3 3"/>
+  <line x1="100" y1="394" x2="400" y2="394" stroke="#2A3550" stroke-dasharray="3 3"/>
+  <line x1="100" y1="518" x2="400" y2="518" stroke="#2A3550" stroke-dasharray="3 3"/>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="40" y="688" width="1020" height="0" fill="none"/>
+  </g>
 </svg>

@@ -1,7 +1,196 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
-  <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">utc-converter</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="procGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2033"/>
+      <stop offset="100%" stop-color="#141A28"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#5B6B8A"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#F59E0B"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="650" fill="#11151F"/>
+  <!-- Outer border -->
+  <rect x="10" y="10" width="1080" height="630" fill="none" stroke="#0066FF" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <circle cx="10" cy="10" r="3" fill="#0066FF"/>
+  <circle cx="1090" cy="10" r="3" fill="#0066FF"/>
+  <circle cx="10" cy="640" r="3" fill="#0066FF"/>
+  <circle cx="1090" cy="640" r="3" fill="#0066FF"/>
+
+  <!-- Title -->
+  <text x="550" y="36" text-anchor="middle" fill="#E6EDF3" font-size="18" font-weight="bold">UtcDateTimeJsonConverter 工作流程</text>
+  <text x="550" y="54" text-anchor="middle" fill="#7D88A0" font-size="11">后端统一 UTC 存储 · JsonConverter 强制带 Z · 前端按本地时区展示</text>
+
+  <!-- ============ Round-trip banner ============ -->
+  <text x="30" y="80" fill="#7D88A0" font-size="10">全链路数据流 (Round-trip)</text>
+
+  <!-- Box 1: DB -->
+  <rect x="30" y="88" width="150" height="44" rx="6" fill="#06281F" stroke="#10B981" stroke-width="1.2"/>
+  <text x="105" y="106" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="bold">DB (UTC)</text>
+  <text x="105" y="122" text-anchor="middle" fill="#9FB3B0" font-size="9">TEXT / datetime</text>
+
+  <!-- Box 2: EF Core Entity -->
+  <rect x="208" y="88" width="150" height="44" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="283" y="106" text-anchor="middle" fill="#9BC1FF" font-size="11" font-weight="bold">EF Core Entity</text>
+  <text x="283" y="122" text-anchor="middle" fill="#9FB3B0" font-size="9">Kind=Unspecified</text>
+
+  <!-- Box 3: Converter -->
+  <rect x="386" y="88" width="150" height="44" rx="6" fill="#2A1A45" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="461" y="106" text-anchor="middle" fill="#C4B5FD" font-size="11" font-weight="bold">UtcDateTimeJsonConverter</text>
+  <text x="461" y="122" text-anchor="middle" fill="#A78BFA" font-size="9">Write / Read</text>
+
+  <!-- Box 4: JSON -->
+  <rect x="564" y="88" width="150" height="44" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="639" y="106" text-anchor="middle" fill="#9BC1FF" font-size="11" font-weight="bold">JSON ISO 8601</text>
+  <text x="639" y="122" text-anchor="middle" fill="#6EE7B7" font-size="9">"...08:00:00Z"</text>
+
+  <!-- Box 5: HTTP Response -->
+  <rect x="742" y="88" width="150" height="44" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="817" y="106" text-anchor="middle" fill="#9BC1FF" font-size="11" font-weight="bold">HTTP Response</text>
+  <text x="817" y="122" text-anchor="middle" fill="#9FB3B0" font-size="9">application/json</text>
+
+  <!-- Box 6: Frontend -->
+  <rect x="920" y="88" width="150" height="44" rx="6" fill="#0A2233" stroke="#06B6D4" stroke-width="1.2"/>
+  <text x="995" y="106" text-anchor="middle" fill="#67E8F9" font-size="11" font-weight="bold">Frontend</text>
+  <text x="995" y="122" text-anchor="middle" fill="#9FB3B0" font-size="9">dayjs(str)</text>
+
+  <!-- Arrows between banner boxes -->
+  <line x1="180" y1="110" x2="206" y2="110" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="358" y1="110" x2="384" y2="110" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="536" y1="110" x2="562" y2="110" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="714" y1="110" x2="740" y2="110" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="892" y1="110" x2="918" y2="110" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- ============ Write flow ============ -->
+  <text x="30" y="168" fill="#C4B5FD" font-size="12" font-weight="bold">① Write 序列化 (DateTime → JSON)</text>
+
+  <!-- Input -->
+  <rect x="30" y="180" width="170" height="50" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="115" y="200" text-anchor="middle" fill="#E6EDF3" font-size="11" font-weight="bold">DateTime value</text>
+  <text x="115" y="216" text-anchor="middle" fill="#9FB3B0" font-size="9">writer, options</text>
+
+  <!-- Arrow to decision -->
+  <line x1="200" y1="205" x2="356" y2="205" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="430,170 504,205 430,240 356,205" fill="#3B2A0A" stroke="#F59E0B" stroke-width="1.3"/>
+  <text x="430" y="202" text-anchor="middle" fill="#FCD34D" font-size="11" font-weight="bold">DateTime.Kind</text>
+  <text x="430" y="217" text-anchor="middle" fill="#FCD34D" font-size="11" font-weight="bold">= ?</text>
+
+  <!-- Branch: Utc -->
+  <path d="M504,205 Q560,205 580,168 L620,168" fill="none" stroke="#10B981" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="566" y="186" fill="#6EE7B7" font-size="9">Utc</text>
+  <rect x="624" y="150" width="200" height="40" rx="6" fill="url(#procGrad)" stroke="#10B981" stroke-width="1.2"/>
+  <text x="724" y="167" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="bold">直接输出</text>
+  <text x="724" y="181" text-anchor="middle" fill="#9FB3B0" font-size="9">writer.WriteStringValue</text>
+
+  <!-- Branch: Local -->
+  <line x1="504" y1="205" x2="620" y2="205" stroke="#5B6B8A" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="560" y="200" fill="#9BC1FF" font-size="9">Local</text>
+  <rect x="624" y="185" width="200" height="40" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="724" y="202" text-anchor="middle" fill="#9BC1FF" font-size="10" font-weight="bold">ToUniversalTime()</text>
+  <text x="724" y="216" text-anchor="middle" fill="#9FB3B0" font-size="9">Local → UTC</text>
+
+  <!-- Branch: Unspecified -->
+  <path d="M504,205 Q560,205 580,242 L620,242" fill="none" stroke="#F59E0B" stroke-width="1.3" marker-end="url(#arrowAmber)"/>
+  <text x="556" y="236" fill="#FCD34D" font-size="9">Unspecified</text>
+  <rect x="624" y="220" width="200" height="40" rx="6" fill="url(#procGrad)" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="724" y="237" text-anchor="middle" fill="#FCD34D" font-size="10" font-weight="bold">SpecifyKind(Utc)</text>
+  <text x="724" y="251" text-anchor="middle" fill="#9FB3B0" font-size="9">裸时间视为 UTC</text>
+
+  <!-- Converge arrow -->
+  <line x1="824" y1="170" x2="876" y2="200" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="824" y1="205" x2="876" y2="205" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="824" y1="240" x2="876" y2="210" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="880" y="180" width="190" height="50" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="975" y="200" text-anchor="middle" fill="#E6EDF3" font-size="11" font-weight="bold">JSON Output</text>
+  <text x="975" y="218" text-anchor="middle" fill="#6EE7B7" font-size="10">"2026-07-15T08:00:00Z"</text>
+
+  <!-- ============ Read flow ============ -->
+  <text x="30" y="298" fill="#C4B5FD" font-size="12" font-weight="bold">② Read 反序列化 (JSON → DateTime)</text>
+
+  <!-- Input -->
+  <rect x="30" y="310" width="170" height="50" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="115" y="330" text-anchor="middle" fill="#E6EDF3" font-size="11" font-weight="bold">JSON String</text>
+  <text x="115" y="346" text-anchor="middle" fill="#6EE7B7" font-size="9">"2026-07-15T08:00:00Z"</text>
+
+  <!-- Arrow to GetDateTime -->
+  <line x1="200" y1="335" x2="286" y2="335" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- GetDateTime -->
+  <rect x="290" y="310" width="120" height="50" rx="6" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1.2"/>
+  <text x="350" y="330" text-anchor="middle" fill="#9BC1FF" font-size="10" font-weight="bold">reader.GetDateTime()</text>
+  <text x="350" y="346" text-anchor="middle" fill="#9FB3B0" font-size="9">value.Kind</text>
+
+  <!-- Arrow to decision -->
+  <line x1="410" y1="335" x2="496" y2="335" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="570,300 644,335 570,370 496,335" fill="#3B2A0A" stroke="#F59E0B" stroke-width="1.3"/>
+  <text x="570" y="332" text-anchor="middle" fill="#FCD34D" font-size="11" font-weight="bold">value.Kind</text>
+  <text x="570" y="347" text-anchor="middle" fill="#FCD34D" font-size="11" font-weight="bold">= ?</text>
+
+  <!-- Branch: Unspecified -->
+  <path d="M644,335 Q700,335 720,300 L760,300" fill="none" stroke="#F59E0B" stroke-width="1.3" marker-end="url(#arrowAmber)"/>
+  <text x="700" y="318" fill="#FCD34D" font-size="9">Unspecified</text>
+  <rect x="764" y="280" width="200" height="40" rx="6" fill="url(#procGrad)" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="864" y="297" text-anchor="middle" fill="#FCD34D" font-size="10" font-weight="bold">SpecifyKind(Utc)</text>
+  <text x="864" y="311" text-anchor="middle" fill="#9FB3B0" font-size="9">裸字符串视为 UTC</text>
+
+  <!-- Branch: Utc / 带偏移 -->
+  <path d="M644,335 Q700,335 720,370 L760,370" fill="none" stroke="#10B981" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <text x="700" y="358" fill="#6EE7B7" font-size="9">Utc / Offset</text>
+  <rect x="764" y="350" width="200" height="40" rx="6" fill="url(#procGrad)" stroke="#10B981" stroke-width="1.2"/>
+  <text x="864" y="367" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="bold">ToUniversalTime()</text>
+  <text x="864" y="381" text-anchor="middle" fill="#9FB3B0" font-size="9">带 Z / 偏移 → UTC</text>
+
+  <!-- Converge arrow -->
+  <line x1="964" y1="300" x2="1016" y2="330" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="964" y1="370" x2="1016" y2="340" stroke="#5B6B8A" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Output -->
+  <rect x="1020" y="310" width="60" height="50" rx="20" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="1050" y="330" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="bold">return</text>
+  <text x="1050" y="346" text-anchor="middle" fill="#6EE7B7" font-size="9">Kind=Utc</text>
+
+  <!-- ============ Registration note ============ -->
+  <rect x="30" y="405" width="1040" height="56" rx="6" fill="#161C2B" stroke="#2A3245" stroke-width="1"/>
+  <text x="44" y="425" fill="#7D88A0" font-size="10">Program.cs 全局注册：</text>
+  <text x="44" y="442" fill="#9BC1FF" font-size="11">options.JsonSerializerOptions.Converters.Add(new UtcDateTimeJsonConverter());</text>
+  <text x="44" y="456" fill="#6EE7B7" font-size="9">// 一行注册，全局所有 DateTime 字段走此 Converter · 位于 Chet.Admin.Shared 层（零依赖）</text>
+
+  <!-- ============ Legend ============ -->
+  <rect x="30" y="475" width="1040" height="150" rx="6" fill="#161C2B" stroke="#2A3245" stroke-width="1"/>
+  <text x="44" y="495" fill="#E6EDF3" font-size="11" font-weight="bold">图例 (Legend)</text>
+
+  <rect x="44" y="508" width="18" height="12" rx="3" fill="url(#procGrad)" stroke="#0066FF" stroke-width="1"/>
+  <text x="70" y="518" fill="#9BC1FF" font-size="10">处理 / 数据节点</text>
+
+  <rect x="200" y="508" width="18" height="12" rx="3" fill="#2A1A45" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="226" y="518" fill="#C4B5FD" font-size="10">后端服务 / Converter</text>
+
+  <rect x="380" y="508" width="18" height="12" rx="3" fill="#06281F" stroke="#10B981" stroke-width="1"/>
+  <text x="406" y="518" fill="#6EE7B7" font-size="10">数据库 / 起点</text>
+
+  <rect x="540" y="508" width="18" height="12" rx="3" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="566" y="518" fill="#6EE7B7" font-size="10">终点 (Start/End)</text>
+
+  <polygon points="710,508 728,514 710,520 692,514" fill="#3B2A0A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="736" y="518" fill="#FCD34D" font-size="10">判定 (Kind 分支)</text>
+
+  <rect x="880" y="508" width="18" height="12" rx="3" fill="#0A2233" stroke="#06B6D4" stroke-width="1"/>
+  <text x="906" y="518" fill="#67E8F9" font-size="10">前端节点</text>
+
+  <text x="44" y="548" fill="#7D88A0" font-size="10">关键约定：</text>
+  <text x="44" y="566" fill="#9FB3B0" font-size="10">• SaveChangesAsync 统一写入 DateTime.UtcNow · EF Core 读回 SQLite TEXT 时 Kind=Unspecified</text>
+  <text x="44" y="582" fill="#9FB3B0" font-size="10">• System.Text.Json 默认对 Unspecified 不带 Z · Converter 用 SpecifyKind 强制标为 UTC 输出 ISO 8601</text>
+  <text x="44" y="598" fill="#9FB3B0" font-size="10">• 跨库兼容：SQLite / MySQL(datetime) Kind=Unspecified ✅  PostgreSQL(timestamptz) Kind=Utc ✅</text>
+  <text x="44" y="614" fill="#6EE7B7" font-size="10">• 结果：前端拿到的 JSON 永远是 "2026-07-15T08:00:00Z" 带明确时区标识</text>
 </svg>

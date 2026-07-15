@@ -1,7 +1,123 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 780" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="780" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="778" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">register-flow</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">注册流程 · Register Flow</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">AuthService.RegisterAsync · BCrypt WorkFactor=12 · 邮箱唯一</text>
+
+  <!-- Start terminal -->
+  <rect x="370" y="80" width="360" height="42" rx="21" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="100" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">POST /api/v1/auth/register</text>
+  <text x="550" y="116" text-anchor="middle" fill="#6EE7B7" font-size="10">RegisterDto { Name, Email, Password }</text>
+  <line x1="550" y1="122" x2="550" y2="142" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 1 -->
+  <rect x="400" y="142" width="300" height="34" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="163" text-anchor="middle" fill="#E8ECF4" font-size="12">① LogInformation "registration attempt"</text>
+  <line x1="550" y1="176" x2="550" y2="196" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 2 -->
+  <rect x="400" y="196" width="300" height="34" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="217" text-anchor="middle" fill="#E8ECF4" font-size="12">② Users.GetByEmailAsync(email)</text>
+  <line x1="550" y1="230" x2="550" y2="252" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Decision diamond -->
+  <polygon points="550,252 720,306 550,360 380,306" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="550" y="302" text-anchor="middle" fill="#FDE68A" font-size="12" font-weight="700">existingUser != null ?</text>
+  <text x="550" y="320" text-anchor="middle" fill="#9CA3AF" font-size="10">邮箱是否已注册</text>
+
+  <!-- YES branch -->
+  <line x1="720" y1="306" x2="800" y2="306" stroke="#F87171" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <text x="755" y="298" text-anchor="middle" fill="#F87171" font-size="11" font-weight="600">YES</text>
+  <rect x="800" y="284" width="280" height="44" rx="6" fill="#3B0A0A" stroke="#F87171"/>
+  <text x="940" y="302" text-anchor="middle" fill="#FCA5A5" font-size="12" font-weight="600">throw BadRequestException</text>
+  <text x="940" y="318" text-anchor="middle" fill="#F87171" font-size="10">"Email already exists" → 400</text>
+
+  <!-- NO branch -->
+  <line x1="550" y1="360" x2="550" y2="380" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+  <text x="568" y="375" fill="#10B981" font-size="11" font-weight="600">NO</text>
+
+  <!-- Step 3 -->
+  <rect x="400" y="380" width="300" height="34" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="401" text-anchor="middle" fill="#E8ECF4" font-size="12">③ BeginTransactionAsync()</text>
+  <line x1="550" y1="414" x2="550" y2="434" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 4 -->
+  <rect x="400" y="434" width="300" height="34" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="455" text-anchor="middle" fill="#E8ECF4" font-size="12">④ _mapper.Map&lt;UserEntity&gt;(dto)</text>
+  <line x1="550" y1="468" x2="550" y2="488" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 5 - service -->
+  <rect x="380" y="488" width="340" height="56" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="550" y="509" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">⑤ _passwordService.Hash(password)</text>
+  <text x="550" y="525" text-anchor="middle" fill="#C4B5FD" font-size="10">BCrypt.HashPassword · WorkFactor=12（2^12 轮 ≈250ms）</text>
+  <text x="550" y="538" text-anchor="middle" fill="#9CA3AF" font-size="9">内置盐值 · 强制下限 6 位 · user.PasswordHash = hash</text>
+  <line x1="550" y1="544" x2="550" y2="564" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 6 -->
+  <rect x="400" y="564" width="300" height="42" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="582" text-anchor="middle" fill="#E8ECF4" font-size="12">⑥ user.PasswordChangedAt = UtcNow</text>
+  <text x="550" y="598" text-anchor="middle" fill="#9CA3AF" font-size="10">MustChangePassword = false（密码过期策略基准）</text>
+  <line x1="550" y1="606" x2="550" y2="626" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Step 7 -->
+  <rect x="400" y="626" width="300" height="34" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="647" text-anchor="middle" fill="#E8ECF4" font-size="12">⑦ Users.AddAsync + CommitAsync()</text>
+  <line x1="550" y1="660" x2="550" y2="680" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- End terminal -->
+  <rect x="370" y="680" width="360" height="40" rx="20" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="700" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">201 Created</text>
+  <text x="550" y="714" text-anchor="middle" fill="#6EE7B7" font-size="10">"User registered successfully"</text>
+
+  <!-- Left: Exception path -->
+  <g>
+    <text x="180" y="395" text-anchor="middle" fill="#F87171" font-size="11" font-weight="600">try { ③ … ⑦ } catch (Exception ex)</text>
+
+    <rect x="60" y="408" width="240" height="38" rx="6" fill="#3B0A0A" stroke="#F87171"/>
+    <text x="180" y="426" text-anchor="middle" fill="#FCA5A5" font-size="11" font-weight="600">LogError(ex, "Registration failed")</text>
+    <text x="180" y="440" text-anchor="middle" fill="#9CA3AF" font-size="9">记录异常堆栈便于排查</text>
+    <line x1="180" y1="446" x2="180" y2="460" stroke="#F87171" stroke-width="1.5" marker-end="url(#arrR)"/>
+
+    <rect x="60" y="460" width="240" height="38" rx="6" fill="#3B0A0A" stroke="#F87171"/>
+    <text x="180" y="478" text-anchor="middle" fill="#FCA5A5" font-size="11" font-weight="600">_unitOfWork.RollbackAsync()</text>
+    <text x="180" y="492" text-anchor="middle" fill="#9CA3AF" font-size="9">回滚事务，避免脏数据</text>
+    <line x1="180" y1="498" x2="180" y2="512" stroke="#F87171" stroke-width="1.5" marker-end="url(#arrR)"/>
+
+    <rect x="60" y="512" width="240" height="38" rx="6" fill="#3B0A0A" stroke="#F87171"/>
+    <text x="180" y="530" text-anchor="middle" fill="#FCA5A5" font-size="11" font-weight="600">throw;</text>
+    <text x="180" y="544" text-anchor="middle" fill="#9CA3AF" font-size="9">向上抛 → 全局异常过滤器</text>
+
+    <!-- dashed connectors showing try-catch scope -->
+    <path d="M300,427 C345,427 365,397 400,397" stroke="#F87171" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+    <path d="M300,531 C345,531 365,643 400,643" stroke="#F87171" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- Legend -->
+  <g>
+    <rect x="40" y="730" width="1020" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="752" fill="#6B7280" font-size="11">图例：</text>
+    <rect x="115" y="743" width="14" height="10" rx="2" fill="#064E3B" stroke="#10B981"/><text x="135" y="752" fill="#C8D0E0" font-size="11">起止</text>
+    <rect x="180" y="743" width="14" height="10" rx="2" fill="url(#pBox)" stroke="#0066FF"/><text x="200" y="752" fill="#C8D0E0" font-size="11">流程</text>
+    <rect x="245" y="743" width="14" height="10" rx="2" fill="#3B2A0A" stroke="#F59E0B"/><text x="265" y="752" fill="#C8D0E0" font-size="11">判断</text>
+    <rect x="310" y="743" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="330" y="752" fill="#C8D0E0" font-size="11">服务</text>
+    <rect x="375" y="743" width="14" height="10" rx="2" fill="#3B0A0A" stroke="#F87171"/><text x="395" y="752" fill="#C8D0E0" font-size="11">异常</text>
+    <text x="455" y="752" fill="#9CA3AF" font-size="11">设计要点：邮箱唯一且注册后不可改；密码 BCrypt 哈希不可逆；PasswordChangedAt 作为密码过期策略基准</text>
+  </g>
 </svg>

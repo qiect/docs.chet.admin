@@ -1,7 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="proc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="650" fill="#11151F"/>
+  <!-- Outer dashed border -->
+  <rect x="1" y="1" width="1098" height="648" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- Corner dot -->
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">git-remote</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <!-- Title -->
+  <text x="550" y="48" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">Git 远程配置</text>
+  <text x="550" y="70" text-anchor="middle" fill="#4A5366" font-size="12">本地仓库同时推送 GitHub 与 Gitee，保留 upstream 拉取上游更新</text>
+
+  <!-- Upstream box (top-left) -->
+  <rect x="40" y="120" width="240" height="125" rx="10" fill="#0D1117" stroke="#6B7280" stroke-width="1.5"/>
+  <rect x="125" y="132" width="70" height="18" rx="9" fill="#1F2937"/>
+  <text x="160" y="145" text-anchor="middle" fill="#9CA3AF" font-size="10">upstream</text>
+  <text x="160" y="176" text-anchor="middle" fill="#E8ECF4" font-size="15" font-weight="600">Upstream</text>
+  <text x="160" y="198" text-anchor="middle" fill="#9CA3AF" font-size="11">github.com/qiect/Chet.Admin</text>
+  <text x="160" y="220" text-anchor="middle" fill="#6B7280" font-size="10">原仓库 · 仅 fetch</text>
+
+  <!-- GitHub box (top-right) -->
+  <rect x="820" y="120" width="240" height="125" rx="10" fill="#0D1117" stroke="#6B7280" stroke-width="1.5"/>
+  <rect x="905" y="132" width="70" height="18" rx="9" fill="#1F2937"/>
+  <text x="940" y="145" text-anchor="middle" fill="#9CA3AF" font-size="10">origin</text>
+  <text x="940" y="176" text-anchor="middle" fill="#E8ECF4" font-size="15" font-weight="600">GitHub</text>
+  <text x="940" y="198" text-anchor="middle" fill="#9CA3AF" font-size="11">github.com/mycompany/MyApp.Admin</text>
+  <text x="940" y="220" text-anchor="middle" fill="#6B7280" font-size="10">fetch + push</text>
+
+  <!-- Local box (center) -->
+  <rect x="400" y="275" width="300" height="110" rx="10" fill="url(#proc)" stroke="#0066FF" stroke-width="1.8"/>
+  <rect x="510" y="287" width="80" height="18" rx="9" fill="#0B2A5E"/>
+  <text x="550" y="300" text-anchor="middle" fill="#93C5FD" font-size="10">local repo</text>
+  <text x="550" y="332" text-anchor="middle" fill="#E8ECF4" font-size="16" font-weight="600">本地仓库</text>
+  <text x="550" y="354" text-anchor="middle" fill="#9CA3AF" font-size="12">mycompany/MyApp.Admin</text>
+  <text x="550" y="374" text-anchor="middle" fill="#6B7280" font-size="11">git push origin main  ·  git push gitee main</text>
+
+  <!-- Gitee box (bottom-right) -->
+  <rect x="820" y="405" width="240" height="125" rx="10" fill="#3B2A0A" stroke="#F59E0B" stroke-width="1.5"/>
+  <rect x="908" y="417" width="64" height="18" rx="9" fill="#5C3F0E"/>
+  <text x="940" y="430" text-anchor="middle" fill="#FBBF24" font-size="10">gitee</text>
+  <text x="940" y="461" text-anchor="middle" fill="#FBBF24" font-size="15" font-weight="600">Gitee 码云</text>
+  <text x="940" y="483" text-anchor="middle" fill="#D6B380" font-size="11">gitee.com/mycompany/MyApp.Admin</text>
+  <text x="940" y="505" text-anchor="middle" fill="#A87E33" font-size="10">mirror · push</text>
+
+  <!-- Arrows: Local <-> GitHub -->
+  <line x1="685" y1="300" x2="828" y2="215" stroke="#10B981" stroke-width="2" marker-end="url(#arrg)"/>
+  <text x="730" y="246" fill="#10B981" font-size="11">push</text>
+  <line x1="828" y1="235" x2="685" y2="320" stroke="#5A6788" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="730" y="292" fill="#5A6788" font-size="11">pull</text>
+
+  <!-- Arrow: Local -> Gitee -->
+  <line x1="685" y1="360" x2="828" y2="430" stroke="#10B981" stroke-width="2" marker-end="url(#arrg)"/>
+  <text x="722" y="402" fill="#10B981" font-size="11">push</text>
+
+  <!-- Arrow: Upstream -> Local (fetch) -->
+  <line x1="280" y1="215" x2="398" y2="300" stroke="#5A6788" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="300" y="250" fill="#5A6788" font-size="11">fetch upstream</text>
+
+  <!-- Commands panel -->
+  <rect x="60" y="548" width="980" height="86" rx="8" fill="#0D1117" stroke="#1F2937" stroke-width="1.2"/>
+  <text x="76" y="568" fill="#4A5366" font-size="11">git remote 配置命令</text>
+  <text y="590" font-size="12">
+    <tspan x="76" fill="#6B7280">$</tspan>
+    <tspan x="90" fill="#60A5FA">git remote add origin</tspan>
+    <tspan x="250" fill="#9CA3AF">https://github.com/mycompany/MyApp.Admin.git</tspan>
+  </text>
+  <text y="610" font-size="12">
+    <tspan x="76" fill="#6B7280">$</tspan>
+    <tspan x="90" fill="#60A5FA">git remote add gitee</tspan>
+    <tspan x="250" fill="#9CA3AF">https://gitee.com/mycompany/MyApp.Admin.git</tspan>
+  </text>
+  <text y="630" font-size="12">
+    <tspan x="76" fill="#6B7280">$</tspan>
+    <tspan x="90" fill="#60A5FA">git remote add upstream</tspan>
+    <tspan x="250" fill="#9CA3AF">https://github.com/qiect/Chet.Admin.git</tspan>
+  </text>
 </svg>

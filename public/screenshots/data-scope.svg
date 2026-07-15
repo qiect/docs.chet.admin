@@ -1,7 +1,148 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 800" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="800" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="798" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">data-scope</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">数据权限过滤流程</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">DataScopeService · 多角色就高不就低 · 动态拼接 WHERE</text>
+
+  <!-- ============ Spine ============ -->
+  <!-- n1 Start -->
+  <rect x="400" y="74" width="300" height="38" rx="19" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="98" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">请求 GET /api/v1/users（分页查询）</text>
+  <line x1="550" y1="112" x2="550" y2="132" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n2 -->
+  <rect x="400" y="132" width="300" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="156" text-anchor="middle" fill="#E8ECF4" font-size="12">currentUserId = JWT.Sub Claim</text>
+  <line x1="550" y1="170" x2="550" y2="190" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n3 service -->
+  <rect x="400" y="190" width="300" height="38" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="550" y="214" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">GetDataScopeAsync(userId)</text>
+  <line x1="550" y1="228" x2="550" y2="248" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n3a detail -->
+  <rect x="320" y="248" width="460" height="48" rx="6" fill="url(#pBox)" stroke="#2A3550"/>
+  <text x="550" y="268" text-anchor="middle" fill="#C8D0E0" font-size="11">查 UserRoles → Roles.DataScope 列表</text>
+  <text x="550" y="285" text-anchor="middle" fill="#A78BFA" font-size="11" font-weight="600">取最宽松：All &gt; DeptAndChild &gt; Dept &gt; Custom &gt; Self</text>
+  <line x1="550" y1="296" x2="550" y2="316" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n4 Decision -->
+  <polygon points="550,316 730,376 550,436 370,376" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="550" y="372" text-anchor="middle" fill="#FDE68A" font-size="13" font-weight="700">dataScope = ?</text>
+  <text x="550" y="390" text-anchor="middle" fill="#9CA3AF" font-size="10">switch 分支</text>
+
+  <!-- ============ 5 lanes (fan) ============ -->
+  <!-- lane top y=460, h=130, bottom y=590 -->
+  <!-- center x positions: All 140, DeptAndChild 342, Dept 544, Custom 746, Self 948 -->
+
+  <!-- fan arrows from decision bottom (550,436) to each lane top center -->
+  <g stroke-width="1.5" fill="none">
+    <path d="M550,436 C550,450 140,446 140,460" stroke="#10B981" marker-end="url(#arr)"/>
+    <path d="M550,436 C550,450 342,446 342,460" stroke="#3B82F6" marker-end="url(#arr)"/>
+    <line x1="550" y1="436" x2="544" y2="460" stroke="#06B6D4" marker-end="url(#arr)"/>
+    <path d="M550,436 C550,450 746,446 746,460" stroke="#8B5CF6" marker-end="url(#arr)"/>
+    <path d="M550,436 C550,450 948,446 948,460" stroke="#F59E0B" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- Lane: All -->
+  <g>
+    <rect x="45" y="460" width="190" height="130" rx="8" fill="#06281F" stroke="#10B981"/>
+    <rect x="45" y="460" width="190" height="28" rx="8" fill="#065F46"/>
+    <rect x="45" y="482" width="190" height="6" fill="#065F46"/>
+    <text x="140" y="479" text-anchor="middle" fill="#D1FAE5" font-size="12" font-weight="700">All · 全部数据</text>
+    <text x="140" y="508" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="600">不加 WHERE</text>
+    <text x="140" y="528" text-anchor="middle" fill="#9CA3AF" font-size="10">直接返回全部记录</text>
+    <text x="140" y="552" text-anchor="middle" fill="#6B7280" font-size="10">总经理视角</text>
+    <text x="140" y="575" text-anchor="middle" fill="#10B981" font-size="10" font-weight="600">最宽松 ↑</text>
+  </g>
+
+  <!-- Lane: DeptAndChild -->
+  <g>
+    <rect x="247" y="460" width="190" height="130" rx="8" fill="#0B1A3A" stroke="#3B82F6"/>
+    <rect x="247" y="460" width="190" height="28" rx="8" fill="#1E40AF"/>
+    <rect x="247" y="482" width="190" height="6" fill="#1E40AF"/>
+    <text x="342" y="479" text-anchor="middle" fill="#DBEAFE" font-size="12" font-weight="700">DeptAndChild</text>
+    <text x="342" y="508" text-anchor="middle" fill="#93C5FD" font-size="10" font-weight="600">本部门及下级</text>
+    <text x="342" y="528" text-anchor="middle" fill="#BFDBFE" font-size="10">WHERE u.DeptId</text>
+    <text x="342" y="542" text-anchor="middle" fill="#BFDBFE" font-size="10">IN (...)</text>
+    <text x="342" y="565" text-anchor="middle" fill="#9CA3AF" font-size="9">递归查子部门</text>
+    <text x="342" y="582" text-anchor="middle" fill="#60A5FA" font-size="9">GetAccessibleDeptIdsAsync</text>
+  </g>
+
+  <!-- Lane: Dept -->
+  <g>
+    <rect x="449" y="460" width="190" height="130" rx="8" fill="#082F33" stroke="#06B6D4"/>
+    <rect x="449" y="460" width="190" height="28" rx="8" fill="#155E75"/>
+    <rect x="449" y="482" width="190" height="6" fill="#155E75"/>
+    <text x="544" y="479" text-anchor="middle" fill="#CFFAFE" font-size="12" font-weight="700">Dept · 本部门</text>
+    <text x="544" y="508" text-anchor="middle" fill="#67E8F9" font-size="10" font-weight="600">WHERE u.DeptId = ?</text>
+    <text x="544" y="532" text-anchor="middle" fill="#9CA3AF" font-size="10">= 当前用户</text>
+    <text x="544" y="548" text-anchor="middle" fill="#9CA3AF" font-size="10">DepartmentId</text>
+    <text x="544" y="575" text-anchor="middle" fill="#9CA3AF" font-size="10">部门经理视角</text>
+  </g>
+
+  <!-- Lane: Custom -->
+  <g>
+    <rect x="651" y="460" width="190" height="130" rx="8" fill="#221043" stroke="#8B5CF6"/>
+    <rect x="651" y="460" width="190" height="28" rx="8" fill="#5B21B6"/>
+    <rect x="651" y="482" width="190" height="6" fill="#5B21B6"/>
+    <text x="746" y="479" text-anchor="middle" fill="#EDE9FE" font-size="12" font-weight="700">Custom · 自定义</text>
+    <text x="746" y="508" text-anchor="middle" fill="#C4B5FD" font-size="10" font-weight="600">WHERE u.DeptId</text>
+    <text x="746" y="522" text-anchor="middle" fill="#C4B5FD" font-size="10">IN (自定义部门)</text>
+    <text x="746" y="548" text-anchor="middle" fill="#9CA3AF" font-size="9">查 RoleDataScopeDepts</text>
+    <text x="746" y="565" text-anchor="middle" fill="#9CA3AF" font-size="9">精细指定可见部门</text>
+    <text x="746" y="582" text-anchor="middle" fill="#A78BFA" font-size="9">+ Custom 关联表</text>
+  </g>
+
+  <!-- Lane: Self -->
+  <g>
+    <rect x="853" y="460" width="190" height="130" rx="8" fill="#3B2A0A" stroke="#F59E0B"/>
+    <rect x="853" y="460" width="190" height="28" rx="8" fill="#B45309"/>
+    <rect x="853" y="482" width="190" height="6" fill="#B45309"/>
+    <text x="948" y="479" text-anchor="middle" fill="#FEF3C7" font-size="12" font-weight="700">Self · 仅本人</text>
+    <text x="948" y="508" text-anchor="middle" fill="#FCD34D" font-size="10" font-weight="600">WHERE u.Id</text>
+    <text x="948" y="522" text-anchor="middle" fill="#FCD34D" font-size="10">= currentUserId</text>
+    <text x="948" y="548" text-anchor="middle" fill="#9CA3AF" font-size="10">普通员工视角</text>
+    <text x="948" y="575" text-anchor="middle" fill="#F59E0B" font-size="10" font-weight="600">最严格 ↓</text>
+  </g>
+
+  <!-- arrows from each lane bottom to merge -->
+  <g stroke="#5A6788" stroke-width="1.5" fill="none">
+    <path d="M140,590 C140,610 544,612 544,624" marker-end="url(#arr)"/>
+    <path d="M342,590 C342,610 544,612 544,624" marker-end="url(#arr)"/>
+    <line x1="544" y1="590" x2="544" y2="624" marker-end="url(#arr)"/>
+    <path d="M746,590 C746,610 544,612 544,624" marker-end="url(#arr)"/>
+    <path d="M948,590 C948,610 544,612 544,624" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- merge: execute paged query -->
+  <rect x="394" y="624" width="312" height="42" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="642" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">执行查询 · Skip / Take 分页</text>
+  <text x="550" y="658" text-anchor="middle" fill="#9CA3AF" font-size="10">_mapper.Map&lt;List&lt;UserDto&gt;&gt; 投影为 DTO</text>
+  <line x1="550" y1="666" x2="550" y2="688" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- End -->
+  <rect x="394" y="688" width="312" height="40" rx="20" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="713" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">返回 PagedResult&lt;UserDto&gt;</text>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="40" y="748" width="1020" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="767" fill="#6B7280" font-size="11">图例：</text>
+    <text x="105" y="767" fill="#10B981" font-size="11">● 越宽</text>
+    <text x="170" y="767" fill="#F59E0B" font-size="11">● 越严</text>
+    <rect x="225" y="758" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="245" y="767" fill="#C8D0E0" font-size="11">服务层</text>
+    <text x="60" y="783" fill="#9CA3AF" font-size="11">设计哲学：多角色权限叠加「就高不就低」——A 角色看本部门、B 角色看全部，最终即看全部；Custom 配合 RoleDataScopeDepts 精细到部门粒度</text>
+  </g>
 </svg>

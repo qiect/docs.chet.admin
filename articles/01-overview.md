@@ -216,41 +216,6 @@ Chet.Admin.Api/
 <!-- 前端 Monorepo 结构图 -->
 ![前端 Monorepo 结构](/screenshots/frontend-architecture.svg)
 
-```
-Chet.Admin.Web/
-├── apps/
-│   └── web-antd/                  # 主应用（Ant Design Vue）
-│       └── src/
-│           ├── api/               # API 请求层（core + system）
-│           ├── views/             # 页面（dashboard / system / _core）
-│           ├── store/             # Pinia 状态管理
-│           ├── router/            # 动态路由 + 权限守卫
-│           ├── composables/       # 组合式函数（useDict 等）
-│           ├── layouts/           # 布局组件
-│           └── adapter/           # 组件适配器
-│
-├── packages/                      # 核心包
-│   ├── @core/                     # 核心能力
-│   │   ├── base/                  # 基础（design / icons / shared / typings）
-│   │   ├── composables/           # 组合式函数
-│   │   ├── preferences/           # 偏好设置
-│   │   └── ui-kit/                # UI 组件库（form / layout / menu / popup / shadcn / tabs）
-│   ├── constants/                 # 常量定义
-│   └── effects/                   # 效果层
-│       ├── access/                # 权限控制（指令 + 组件）
-│       ├── common-ui/             # 通用 UI（about / fallback / profile）
-│       ├── hooks/                 # 业务 Hooks（watermark / tabs / pagination）
-│       ├── layouts/               # 布局（basic / authentication）
-│       └── plugins/               # 插件（echarts）
-│
-└── internal/                      # 内部工具
-    ├── lint-configs/              # 代码规范（eslint / oxlint / stylelint / commitlint）
-    ├── node-utils/                # Node 工具函数
-    ├── tailwind-config/           # Tailwind 配置
-    ├── tsconfig/                  # TS 配置
-    └── vite-config/               # Vite 配置
-```
-
 ### 中间件管道
 
 后端通过中间件管道处理请求，顺序精心设计：

@@ -505,7 +505,7 @@ const columns: VxeTableGridColumns = [
 ```
 
 <!-- 文件列表界面 -->
-![文件列表](/screenshots/file.svg)
+![文件列表](/screenshots/file.png)
 
 ---
 

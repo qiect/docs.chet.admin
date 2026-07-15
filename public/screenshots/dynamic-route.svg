@@ -1,7 +1,140 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 930" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="930" fill="#11151F"/>
+  <rect x="1" y="1" width="1078" height="928" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">dynamic-route</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="540" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">动态路由生成流程</text>
+  <text x="540" y="56" text-anchor="middle" fill="#4A5366" font-size="12">Vue Router 全局守卫 · 菜单由后端按角色下发，前端动态注册路由</text>
+
+  <!-- ============ Spine nodes (center x=420) ============ -->
+  <!-- n1 Start -->
+  <rect x="270" y="78" width="300" height="40" rx="20" fill="#064E3B" stroke="#10B981"/>
+  <text x="420" y="103" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">用户访问 URL（如 /system/user）</text>
+  <line x1="420" y1="118" x2="420" y2="140" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n2 -->
+  <rect x="270" y="140" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="420" y="165" text-anchor="middle" fill="#E8ECF4" font-size="12">router.beforeEach 全局守卫触发</text>
+  <line x1="420" y1="180" x2="420" y2="202" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n3 Decision: core route -->
+  <polygon points="420,202 580,242 420,282 260,242" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="420" y="238" text-anchor="middle" fill="#FDE68A" font-size="12" font-weight="600">核心路由？</text>
+  <text x="420" y="254" text-anchor="middle" fill="#9CA3AF" font-size="10">(login / 404 / 等公共页)</text>
+  <!-- branch right 是 -->
+  <line x1="580" y1="242" x2="700" y2="242" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+  <text x="640" y="234" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">是</text>
+  <rect x="700" y="222" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#10B981" stroke-dasharray="4 3"/>
+  <text x="850" y="240" text-anchor="middle" fill="#A7F3D0" font-size="11">已登录访问 login → 跳首页</text>
+  <text x="850" y="255" text-anchor="middle" fill="#9CA3AF" font-size="11">否则直接放行</text>
+  <!-- down 否 -->
+  <line x1="420" y1="282" x2="420" y2="304" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="432" y="298" fill="#F87171" font-size="11" font-weight="700">否</text>
+
+  <!-- n4 Decision: token -->
+  <polygon points="420,304 580,344 420,384 260,344" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="420" y="340" text-anchor="middle" fill="#FDE68A" font-size="12" font-weight="600">存在 accessToken？</text>
+  <text x="420" y="356" text-anchor="middle" fill="#9CA3AF" font-size="10">accessStore.accessToken</text>
+  <!-- branch right 否 -->
+  <line x1="580" y1="344" x2="700" y2="344" stroke="#F87171" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <text x="640" y="336" text-anchor="middle" fill="#F87171" font-size="11" font-weight="700">否</text>
+  <rect x="700" y="324" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#F87171" stroke-dasharray="4 3"/>
+  <text x="850" y="349" text-anchor="middle" fill="#FCA5A5" font-size="11">跳转 /login（携带 redirect 参数）</text>
+  <!-- down 是 -->
+  <line x1="420" y1="384" x2="420" y2="406" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="432" y="400" fill="#10B981" font-size="11" font-weight="700">是</text>
+
+  <!-- n5 Decision: isAccessChecked -->
+  <polygon points="420,406 580,446 420,486 260,446" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="420" y="442" text-anchor="middle" fill="#FDE68A" font-size="12" font-weight="600">isAccessChecked？</text>
+  <text x="420" y="458" text-anchor="middle" fill="#9CA3AF" font-size="10">动态路由是否已生成</text>
+  <!-- branch right 是 -->
+  <line x1="580" y1="446" x2="700" y2="446" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+  <text x="640" y="438" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">是</text>
+  <rect x="700" y="426" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#10B981" stroke-dasharray="4 3"/>
+  <text x="850" y="451" text-anchor="middle" fill="#A7F3D0" font-size="11">直接放行（路由已存在）</text>
+  <!-- down 否 -->
+  <line x1="420" y1="486" x2="420" y2="508" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="432" y="502" fill="#F87171" font-size="11" font-weight="700">否</text>
+
+  <!-- n6 fetchUserInfo -->
+  <rect x="270" y="508" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="420" y="533" text-anchor="middle" fill="#E8ECF4" font-size="12">fetchUserInfo() · 获取 userInfo + roles</text>
+  <line x1="420" y1="548" x2="420" y2="570" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n7 generateAccess -->
+  <rect x="270" y="570" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="420" y="595" text-anchor="middle" fill="#E8ECF4" font-size="12">generateAccess() · 调用 GET /menus/my</text>
+  <line x1="420" y1="610" x2="420" y2="632" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <text x="432" y="626" fill="#8B5CF6" font-size="10">HTTP</text>
+
+  <!-- n8 backend -->
+  <rect x="270" y="632" width="300" height="46" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="420" y="654" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">后端：按用户角色过滤菜单树</text>
+  <text x="420" y="670" text-anchor="middle" fill="#A78BFA" font-size="10">UserRoles → RoleMenus → 返回 MenuDto[]</text>
+  <line x1="420" y1="678" x2="420" y2="700" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <text x="432" y="694" fill="#8B5CF6" font-size="10">菜单数据</text>
+
+  <!-- n9 addRoute -->
+  <rect x="270" y="700" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="420" y="725" text-anchor="middle" fill="#E8ECF4" font-size="12">前端动态注册路由 router.addRoute()</text>
+  <line x1="420" y1="740" x2="420" y2="762" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n10 store -->
+  <rect x="270" y="762" width="300" height="40" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="420" y="787" text-anchor="middle" fill="#E8ECF4" font-size="11">setAccessMenus / setAccessRoutes</text>
+  <text x="420" y="800" text-anchor="middle" fill="#9CA3AF" font-size="10">isAccessChecked = true</text>
+  <line x1="420" y1="802" x2="420" y2="824" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n11 redirect end -->
+  <rect x="270" y="824" width="300" height="46" rx="23" fill="#064E3B" stroke="#10B981"/>
+  <text x="420" y="846" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">重定向到目标页 → 渲染左侧菜单</text>
+  <text x="420" y="862" text-anchor="middle" fill="#6EE7B7" font-size="10">解决刷新后路由丢失问题</text>
+
+  <!-- side annotations -->
+  <g fill="#4A5366" font-size="10">
+    <text x="40" y="100">入口</text>
+    <text x="40" y="540">① 拉用户信息</text>
+    <text x="40" y="595">② 拉菜单树</text>
+    <text x="40" y="725">③ 注册路由</text>
+  </g>
+  <line x1="90" y1="528" x2="270" y2="528" stroke="#2A3550" stroke-dasharray="3 3"/>
+  <line x1="90" y1="585" x2="270" y2="585" stroke="#2A3550" stroke-dasharray="3 3"/>
+  <line x1="90" y1="715" x2="270" y2="715" stroke="#2A3550" stroke-dasharray="3 3"/>
+
+  <!-- terminal indicators (right column ends) -->
+  <g>
+    <circle cx="1020" cy="242" r="4" fill="#10B981"/>
+    <circle cx="1020" cy="344" r="4" fill="#F87171"/>
+    <circle cx="1020" cy="446" r="4" fill="#10B981"/>
+    <circle cx="1020" cy="847" r="4" fill="#10B981"/>
+  </g>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="40" y="888" width="1000" height="30" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="907" fill="#6B7280" font-size="11">图例：</text>
+    <rect x="105" y="899" width="14" height="10" rx="2" fill="#064E3B" stroke="#10B981"/><text x="125" y="908" fill="#C8D0E0" font-size="11">起止</text>
+    <rect x="175" y="899" width="14" height="10" rx="2" fill="url(#pBox)" stroke="#0066FF"/><text x="195" y="908" fill="#C8D0E0" font-size="11">处理</text>
+    <polygon points="245,904 259,899 273,904 259,909" fill="#3B2A0A" stroke="#F59E0B"/><text x="282" y="908" fill="#C8D0E0" font-size="11">判断</text>
+    <rect x="335" y="899" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="355" y="908" fill="#C8D0E0" font-size="11">后端</text>
+    <text x="410" y="908" fill="#10B981" font-size="11">绿=通过</text>
+    <text x="490" y="908" fill="#F87171" font-size="11">红=拦截</text>
+    <text x="570" y="908" fill="#9CA3AF" font-size="11">关键机制：菜单不在前端硬编码，登录后由后端按角色下发，刷新通过 isAccessChecked 重新生成</text>
+  </g>
 </svg>

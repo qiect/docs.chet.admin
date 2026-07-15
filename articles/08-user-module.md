@@ -200,7 +200,7 @@ public async Task<PagedResult<UserDto>> GetPagedUsersAsync(PagedRequest request,
 > 🎯 **关键设计**：Service 不知道当前用户是谁，由 Controller 把 `currentUserId` 传进来。这样 Service 易测试，权限逻辑清晰可追溯。
 
 <!-- 用户分页查询流程 -->
-![用户分页流程](/screenshots/user-paged.svg)
+![用户分页流程](/screenshots/user-paged.png)
 
 ### 2.4 创建用户：自动分配角色
 
@@ -438,7 +438,7 @@ export async function deleteUserApi(id: number) {
 ```
 
 <!-- 用户列表页 -->
-![用户列表页](/screenshots/user-list.svg)
+![用户列表页](/screenshots/user.png)
 
 ---
 
@@ -756,7 +756,7 @@ public async Task ChangePasswordAsync(int userId, string oldPassword, string new
 ```
 
 <!-- 个人中心 -->
-![个人中心](/screenshots/profile.svg)
+![个人中心](/screenshots/profile.png)
 
 ---
 

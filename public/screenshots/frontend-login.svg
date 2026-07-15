@@ -1,7 +1,165 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 880" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1300" height="880" fill="#11151F"/>
+  <rect x="1" y="1" width="1298" height="878" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">frontend-login</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="650" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">前端登录流程 · Frontend Login Flow</text>
+  <text x="650" y="56" text-anchor="middle" fill="#4A5366" font-size="12">login.vue · authStore.authLogin (Pinia) · SliderCaptcha 滑块验证</text>
+
+  <!-- ============ Spine ============ -->
+  <!-- [1] Start -->
+  <rect x="270" y="80" width="380" height="38" rx="19" fill="#064E3B" stroke="#10B981"/>
+  <text x="460" y="104" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">用户访问 /auth/login · login.vue 加载</text>
+  <line x1="460" y1="118" x2="460" y2="130" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [2] Form Schema -->
+  <rect x="270" y="130" width="380" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="460" y="154" text-anchor="middle" fill="#E8ECF4" font-size="12">Form Schema · useVbenForm (email + password) · Zod 校验</text>
+  <line x1="460" y1="168" x2="460" y2="180" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [3] SliderCaptcha (special cyan) -->
+  <rect x="270" y="180" width="380" height="38" rx="6" fill="#082F33" stroke="#06B6D4"/>
+  <text x="460" y="204" text-anchor="middle" fill="#CFFAFE" font-size="12" font-weight="600">SliderCaptcha 滑块组件 (sliderRef) · 拖动至右端</text>
+  <line x1="460" y1="218" x2="460" y2="230" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [4] Decision: captchaVerified? -->
+  <polygon points="460,230 580,270 460,310 340,270" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="460" y="265" text-anchor="middle" fill="#FDE68A" font-size="13" font-weight="700">captchaVerified ?</text>
+  <text x="460" y="282" text-anchor="middle" fill="#9CA3AF" font-size="10">@success 事件触发</text>
+
+  <!-- [4] NO branch - left loop back to slider -->
+  <path d="M340,270 L220,270 L220,199 L270,199" stroke="#F87171" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arrR)"/>
+  <text x="332" y="262" text-anchor="end" fill="#FCA5A5" font-size="11" font-weight="600">No</text>
+  <text x="214" y="234" text-anchor="end" fill="#9CA3AF" font-size="10">等待用户</text>
+  <text x="214" y="248" text-anchor="end" fill="#9CA3AF" font-size="10">重新拖动</text>
+
+  <!-- [4] YES arrow down -->
+  <line x1="460" y1="310" x2="460" y2="325" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="476" y="320" fill="#A7F3D0" font-size="11" font-weight="600">Yes</text>
+
+  <!-- [5] handleCaptchaSuccess -->
+  <rect x="270" y="325" width="380" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="460" y="349" text-anchor="middle" fill="#E8ECF4" font-size="12">handleCaptchaSuccess() · captchaVerified = true · lockMessage = ''</text>
+  <line x1="460" y1="363" x2="460" y2="375" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [6] handleLogin -->
+  <rect x="270" y="375" width="380" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="460" y="399" text-anchor="middle" fill="#E8ECF4" font-size="12">用户点击「登录」→ handleLogin() · formApi.validate()</text>
+  <line x1="460" y1="413" x2="460" y2="425" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [7] Decision: valid && captchaVerified? -->
+  <polygon points="460,425 600,465 460,505 320,465" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="460" y="460" text-anchor="middle" fill="#FDE68A" font-size="13" font-weight="700">valid &amp;&amp; captchaVerified ?</text>
+  <text x="460" y="478" text-anchor="middle" fill="#9CA3AF" font-size="10">校验通过且已验证</text>
+
+  <!-- [7] NO branch - to failure sidebar -->
+  <line x1="600" y1="465" x2="830" y2="465" stroke="#F87171" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrR)"/>
+  <text x="612" y="458" fill="#FCA5A5" font-size="11" font-weight="600">No</text>
+  <text x="612" y="478" fill="#9CA3AF" font-size="10">进入失败处理</text>
+
+  <!-- [7] YES arrow down -->
+  <line x1="460" y1="505" x2="460" y2="520" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="476" y="515" fill="#A7F3D0" font-size="11" font-weight="600">Yes</text>
+
+  <!-- [8] authStore.authLogin -->
+  <rect x="270" y="520" width="380" height="38" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="460" y="544" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">authStore.authLogin(params) · Pinia store</text>
+  <line x1="460" y1="558" x2="460" y2="570" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [9] loginApi -->
+  <rect x="270" y="570" width="380" height="38" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="460" y="594" text-anchor="middle" fill="#DDD6FE" font-size="12">loginApi → POST /api/v1/auth/login → { accessToken, refreshToken }</text>
+  <line x1="460" y1="608" x2="460" y2="620" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [10] setTokens -->
+  <rect x="270" y="620" width="380" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="460" y="644" text-anchor="middle" fill="#E8ECF4" font-size="12">accessStore.setAccessToken / setRefreshToken</text>
+  <line x1="460" y1="658" x2="460" y2="670" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [11] fetchUserInfo -->
+  <rect x="270" y="670" width="380" height="38" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="460" y="694" text-anchor="middle" fill="#DDD6FE" font-size="12">fetchUserInfo → getUserInfoApi · GET /api/v1/auth/user-info</text>
+  <line x1="460" y1="708" x2="460" y2="720" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [12] setUserInfo -->
+  <rect x="270" y="720" width="380" height="38" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="460" y="744" text-anchor="middle" fill="#E8ECF4" font-size="12">userStore.setUserInfo + accessStore.setAccessCodes(permissions)</text>
+  <line x1="460" y1="758" x2="460" y2="770" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- [13] End -->
+  <rect x="270" y="770" width="380" height="38" rx="19" fill="#064E3B" stroke="#10B981"/>
+  <text x="460" y="794" text-anchor="middle" fill="#A7F3D0" font-size="13" font-weight="600">router.push(homePath) · notification.success · 登录完成</text>
+
+  <!-- ============ Failure path sidebar (right) ============ -->
+  <g>
+    <rect x="830" y="420" width="430" height="390" rx="6" fill="#3B0A0A" stroke="#F87171" stroke-dasharray="4 3"/>
+    <text x="1045" y="440" text-anchor="middle" fill="#FCA5A5" font-size="12" font-weight="600">失败路径 · catch (error) · login.vue handleLogin</text>
+    <line x1="840" y1="448" x2="1250" y2="448" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <!-- Step 1 -->
+    <text x="850" y="470" fill="#FDE68A" font-size="11" font-weight="600">① captchaVerified = false</text>
+    <text x="870" y="486" fill="#9CA3AF" font-size="10">登录失败后强制重新验证滑块</text>
+
+    <line x1="840" y1="498" x2="1250" y2="498" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <!-- Step 2 -->
+    <text x="850" y="518" fill="#FDE68A" font-size="11" font-weight="600">② sliderRef.resume()</text>
+    <text x="870" y="534" fill="#9CA3AF" font-size="10">重置滑块组件到初始状态</text>
+
+    <line x1="840" y1="546" x2="1250" y2="546" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <!-- Step 3 - decision -->
+    <text x="850" y="566" fill="#FDE68A" font-size="11" font-weight="600">③ error.response.data.lockedUntil ?</text>
+    <text x="870" y="582" fill="#9CA3AF" font-size="10">从 423 Locked 响应体提取锁定到期时间</text>
+
+    <!-- Yes branch -->
+    <text x="860" y="608" fill="#FCA5A5" font-size="10" font-weight="600">└─ Yes：</text>
+    <text x="918" y="608" fill="#FCA5A5" font-size="10">计算 remainingMinutes</text>
+    <text x="918" y="624" fill="#9CA3AF" font-size="10">= ceil((lockedUntil - now) / 60000)</text>
+    <text x="918" y="644" fill="#FCA5A5" font-size="10" font-weight="600">lockMessage =</text>
+    <text x="918" y="660" fill="#FCA5A5" font-size="10">"账号已锁定，请 X 分钟后重试"</text>
+
+    <line x1="840" y1="672" x2="1250" y2="672" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <!-- No branch -->
+    <text x="860" y="694" fill="#A7F3D0" font-size="10" font-weight="600">└─ No：</text>
+    <text x="918" y="694" fill="#A7F3D0" font-size="10">其他错误（401/400/500 等）</text>
+    <text x="918" y="710" fill="#9CA3AF" font-size="10">由 axios 响应拦截器统一弹窗提示</text>
+
+    <line x1="840" y1="722" x2="1250" y2="722" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <!-- Footer note -->
+    <text x="850" y="744" fill="#FCA5A5" font-size="10" font-weight="600">关键代码位置：</text>
+    <text x="850" y="760" fill="#9CA3AF" font-size="10">• login.vue: handleLogin() catch 块（行 82-97）</text>
+    <text x="850" y="776" fill="#9CA3AF" font-size="10">• authStore.authLogin finally → loginLoading = false</text>
+    <text x="850" y="792" fill="#9CA3AF" font-size="10">• 滑块防机器人 · 5 次失败后端将锁定 15 分钟</text>
+  </g>
+
+  <!-- ============ Legend ============ -->
+  <g>
+    <rect x="40" y="820" width="1220" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="842" fill="#6B7280" font-size="11">图例：</text>
+    <rect x="105" y="833" width="14" height="10" rx="2" fill="#064E3B" stroke="#10B981"/><text x="125" y="842" fill="#C8D0E0" font-size="11">起止</text>
+    <rect x="170" y="833" width="14" height="10" rx="2" fill="url(#pBox)" stroke="#0066FF"/><text x="190" y="842" fill="#C8D0E0" font-size="11">前端处理</text>
+    <rect x="255" y="833" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="275" y="842" fill="#C8D0E0" font-size="11">Pinia/API</text>
+    <rect x="345" y="833" width="14" height="10" rx="2" fill="#082F33" stroke="#06B6D4"/><text x="365" y="842" fill="#C8D0E0" font-size="11">滑块组件</text>
+    <polygon points="445,830 455,838 445,846 435,838" fill="#3B2A0A" stroke="#F59E0B"/><text x="465" y="842" fill="#C8D0E0" font-size="11">判断</text>
+    <line x1="510" y1="838" x2="540" y2="838" stroke="#F87171" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrR)"/><text x="548" y="842" fill="#C8D0E0" font-size="11">失败/异常</text>
+    <text x="620" y="842" fill="#9CA3AF" font-size="11">设计要点：滑块验证防机器人 · 前端 try/catch 兜底 · 登录失败立即重置滑块 · lockedUntil 提示用户锁定剩余时间</text>
+  </g>
 </svg>

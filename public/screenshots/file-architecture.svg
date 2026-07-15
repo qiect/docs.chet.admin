@@ -1,7 +1,182 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A1A45"/>
+      <stop offset="1" stop-color="#1E1230"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06281F"/>
+      <stop offset="1" stop-color="#031A14"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A33"/>
+      <stop offset="1" stop-color="#08191F"/>
+    </linearGradient>
+    <linearGradient id="grayGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1F2530"/>
+      <stop offset="1" stop-color="#161A22"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#06B6D4"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="720" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="718" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">file-architecture</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">文件上传架构 · File Upload Architecture</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin · 本地存储 + GUID 重命名 + 双重校验 + Blob 鉴权下载</text>
+
+  <!-- Frontend band -->
+  <rect x="40" y="74" width="1020" height="60" rx="8" fill="#0E1525" stroke="#1F2A44"/>
+  <text x="52" y="92" fill="#5A6788" font-size="11">① Frontend · 前端（绕过默认拦截器）</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <rect x="60" y="100" width="470" height="26" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="70" y="117">⬆ Upload customRequest → FormData → post( multipart, 带 Token )</text>
+    <rect x="560" y="100" width="490" height="26" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="570" y="117">⬇ get( responseType:blob, responseReturn:body ) → createObjectURL → &lt;a download&gt;</text>
+  </g>
+
+  <!-- Upload flow (left) -->
+  <rect x="40" y="150" width="510" height="324" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="56" y="172" fill="#67E8F9" font-size="13" font-weight="600">② Upload Flow · 上传链路</text>
+  <text x="56" y="188" fill="#5A6788" font-size="10">FilesController.Upload → FileService.UploadAsync</text>
+
+  <g font-size="10.5">
+    <rect x="56" y="200" width="478" height="34" rx="5" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="66" y="217" fill="#93C5FD" font-weight="600">[HttpPost("upload")]</text>
+    <text x="240" y="217" fill="#7C8AA5">[RequestSizeLimit(10MB)] · IFormFile</text>
+    <text x="66" y="230" fill="#5A6788" font-size="9.5">JWT Claim → uploaderId</text>
+
+    <line x1="295" y1="234" x2="295" y2="250" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="56" y="252" width="478" height="34" rx="5" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="66" y="269" fill="#DDD6FE" font-weight="600">FileService.UploadAsync</text>
+    <text x="66" y="282" fill="#A78BFA" font-size="9.5">if file.Length &gt; 10MB → BadRequestException</text>
+
+    <line x1="295" y1="286" x2="295" y2="302" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="56" y="304" width="478" height="34" rx="5" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="66" y="321" fill="#DDD6FE">类型白名单校验 (14 种)</text>
+    <text x="66" y="334" fill="#A78BFA" font-size="9.5">.jpg/.png/.gif/.pdf/.doc/.xls/.ppt/.zip/.rar …</text>
+
+    <line x1="295" y1="338" x2="295" y2="354" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="56" y="356" width="478" height="34" rx="5" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="66" y="373" fill="#DDD6FE">GUID 重命名 + FileStream 写盘</text>
+    <text x="66" y="386" fill="#A78BFA" font-size="9.5">$"{Guid.NewGuid():N}{ext}" → uploads/{storedName}</text>
+
+    <line x1="295" y1="390" x2="295" y2="406" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="56" y="408" width="478" height="34" rx="5" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="66" y="425" fill="#6EE7B7">写数据库 FileEntity</text>
+    <text x="66" y="438" fill="#5C8C7A" font-size="9.5">FileName(原始) / StoredName(GUID) / FilePath / Size …</text>
+
+    <text x="56" y="460" fill="#4A5366" font-size="9.5">返回 FileDto · 前端 message.success + gridApi.query()</text>
+  </g>
+
+  <!-- Download flow (right) -->
+  <rect x="570" y="150" width="490" height="324" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="586" y="172" fill="#67E8F9" font-size="13" font-weight="600">③ Download Flow · 下载链路</text>
+  <text x="586" y="188" fill="#5A6788" font-size="10">FilesController.Download → FileService.DownloadAsync</text>
+
+  <g font-size="10.5">
+    <rect x="586" y="200" width="458" height="34" rx="5" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="596" y="217" fill="#93C5FD" font-weight="600">[HttpGet("{id}/download")]</text>
+    <text x="596" y="230" fill="#5A6788" font-size="9.5">return File(data, contentType, fileName) — 二进制流</text>
+
+    <line x1="815" y1="234" x2="815" y2="250" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="586" y="252" width="458" height="34" rx="5" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="596" y="269" fill="#DDD6FE" font-weight="600">FileService.DownloadAsync</text>
+    <text x="596" y="282" fill="#A78BFA" font-size="9.5">AsNoTracking · FirstOrDefaultAsync(f =&gt; f.Id == id)</text>
+
+    <line x1="815" y1="286" x2="815" y2="302" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="586" y="304" width="458" height="34" rx="5" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="596" y="321" fill="#DDD6FE">拼接完整路径 + 检查物理文件存在</text>
+    <text x="596" y="334" fill="#A78BFA" font-size="9.5">Path.Combine(currDir, entity.FilePath) · File.Exists</text>
+
+    <line x1="815" y1="338" x2="815" y2="354" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="586" y="356" width="458" height="34" rx="5" fill="url(#grayGrad)" stroke="#6B7280"/>
+    <text x="596" y="373" fill="#D1D5DB">ReadAllBytesAsync(fullPath) → byte[]</text>
+    <text x="596" y="386" fill="#9CA3AF" font-size="9.5">返回 (Data, ContentType, FileName)</text>
+
+    <line x1="815" y1="390" x2="815" y2="406" stroke="#06B6D4" stroke-width="1.5" marker-end="url(#arrCyan)"/>
+    <rect x="586" y="408" width="458" height="34" rx="5" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="596" y="425" fill="#67E8F9">前端 Blob → createObjectURL → &lt;a&gt;.click()</text>
+    <text x="596" y="438" fill="#5A6788" font-size="9.5">URL.revokeObjectURL 释放内存（防泄漏）</text>
+
+    <text x="586" y="460" fill="#4A5366" font-size="9.5">FileName 用原始名 → 浏览器下载自动命名</text>
+  </g>
+
+  <!-- Bottom infrastructure -->
+  <text x="52" y="496" fill="#5A6788" font-size="11">④ Storage &amp; Data · 存储与数据层</text>
+
+  <rect x="40" y="506" width="380" height="156" rx="8" fill="url(#greenGrad)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="56" y="528" fill="#6EE7B7" font-size="12" font-weight="600">FileEntity · 文件元数据</text>
+  <text x="56" y="544" fill="#5C8C7A" font-size="10">AppDbContext.Files → 数据库</text>
+  <g font-size="10" fill="#A7F3D0">
+    <text x="56" y="566">Id · FileName (原始名)</text>
+    <text x="56" y="582">StoredName (GUID) · FilePath</text>
+    <text x="56" y="598">ContentType · FileSize · Description?</text>
+    <text x="56" y="614">UploaderId? · CreatedAt (UTC)</text>
+  </g>
+  <text x="56" y="638" fill="#5C8C7A" font-size="9">双名设计：原始名展示 + GUID 存储避冲突</text>
+  <text x="56" y="652" fill="#5C8C7A" font-size="9">DeleteAsync：先删物理文件 → 再删 DB 记录</text>
+
+  <!-- uploads folder (external gray) -->
+  <rect x="440" y="506" width="280" height="156" rx="8" fill="url(#grayGrad)" stroke="#6B7280" stroke-width="1.5"/>
+  <text x="456" y="528" fill="#D1D5DB" font-size="12" font-weight="600">📁 uploads/ 目录</text>
+  <text x="456" y="544" fill="#9CA3AF" font-size="10">本地物理存储 · External</text>
+  <g font-size="10" fill="#D1D5DB">
+    <text x="456" y="568">Path.Combine(currDir, "uploads")</text>
+    <text x="456" y="584">构造函数自动创建目录</text>
+    <text x="456" y="606" fill="#9CA3AF">UseStaticFiles 配置：</text>
+    <text x="456" y="622" fill="#9CA3AF">  PhysicalFileProvider(uploadsDir)</text>
+    <text x="456" y="638" fill="#9CA3AF">  RequestPath = "/uploads"</text>
+    <text x="456" y="654" fill="#9CA3AF">URL 直接访问图片资源</text>
+  </g>
+
+  <!-- Controller endpoints summary -->
+  <rect x="740" y="506" width="320" height="156" rx="8" fill="url(#blueGrad)" stroke="#0066FF" stroke-width="1.5"/>
+  <text x="756" y="528" fill="#93C5FD" font-size="12" font-weight="600">FilesController · 5 endpoints</text>
+  <text x="756" y="544" fill="#5A6788" font-size="10">[Authorize] · /api/v1/files</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <text x="756" y="566" fill="#60A5FA">[HttpGet]</text>
+    <text x="860" y="566" fill="#7C8AA5">分页列表 (keyword)</text>
+    <text x="756" y="584" fill="#60A5FA">[HttpPost] upload</text>
+    <text x="860" y="584" fill="#7C8AA5">上传 (10MB 限)</text>
+    <text x="756" y="602" fill="#60A5FA">[HttpGet] {id}</text>
+    <text x="860" y="602" fill="#7C8AA5">详情</text>
+    <text x="756" y="620" fill="#60A5FA">[HttpGet] {id}/download</text>
+    <text x="860" y="620" fill="#7C8AA5">下载文件流</text>
+    <text x="756" y="638" fill="#60A5FA">[HttpDelete] {id}</text>
+    <text x="860" y="638" fill="#7C8AA5">删除 (文件+DB)</text>
+  </g>
+  <text x="756" y="656" fill="#4A5366" font-size="9">下载/详情：所有登录用户；上传/删除需权限</text>
+
+  <!-- Arrows connecting flows to data layer -->
+  <path d="M 200 506 L 200 488" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+  <path d="M 580 506 L 580 488" fill="none" stroke="#6B7280" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 3"/>
+
+  <!-- Legend -->
+  <rect x="40" y="676" width="1020" height="32" rx="6" fill="#161C2B" stroke="#2A3550"/>
+  <g font-size="10.5" fill="#9AA6BF">
+    <rect x="54" y="686" width="12" height="12" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="72" y="696">Controller</text>
+    <rect x="146" y="686" width="12" height="12" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="164" y="696">Service</text>
+    <rect x="226" y="686" width="12" height="12" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="244" y="696">Data/DB</text>
+    <rect x="316" y="686" width="12" height="12" fill="url(#grayGrad)" stroke="#6B7280"/>
+    <text x="334" y="696">本地存储</text>
+    <line x1="396" y1="692" x2="420" y2="692" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="426" y="696">同步调用</text>
+    <line x1="486" y1="692" x2="510" y2="692" stroke="#6B7280" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+    <text x="516" y="696">磁盘 I/O</text>
+    <text x="580" y="696" fill="#5A6788">上传：双重校验 + GUID 重命名 → 写盘 → 写库；下载：查库 → 读盘 → Blob → &lt;a&gt; 下载</text>
+  </g>
 </svg>

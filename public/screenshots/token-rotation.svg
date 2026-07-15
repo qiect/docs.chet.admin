@@ -1,7 +1,185 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 880" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#F87171"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/><stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="880" fill="#11151F"/>
+  <rect x="1" y="1" width="1398" height="878" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">token-rotation</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="700" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">Token Rotation · 刷新令牌轮换</text>
+  <text x="700" y="56" text-anchor="middle" fill="#4A5366" font-size="12">JwtService.RefreshTokenAsync · 每次刷新更换 Refresh Token · 旧的立即失效</text>
+
+  <!-- Actor boxes -->
+  <g>
+    <rect x="50" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#3B82F6"/>
+    <text x="140" y="105" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">Client（请求拦截器）</text>
+
+    <rect x="280" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#3B82F6"/>
+    <text x="370" y="105" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">AuthController</text>
+
+    <rect x="510" y="80" width="180" height="40" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="600" y="105" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">AuthService</text>
+
+    <rect x="740" y="80" width="180" height="40" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="830" y="105" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">JwtService</text>
+
+    <rect x="970" y="80" width="180" height="40" rx="6" fill="#0F1729" stroke="#10B981"/>
+    <text x="1060" y="105" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">DB · Users 表</text>
+  </g>
+
+  <!-- Lifelines -->
+  <g stroke="#3A4666" stroke-width="1" stroke-dasharray="4 4">
+    <line x1="140" y1="120" x2="140" y2="760"/>
+    <line x1="370" y1="120" x2="370" y2="760"/>
+    <line x1="600" y1="120" x2="600" y2="760"/>
+    <line x1="830" y1="120" x2="830" y2="760"/>
+    <line x1="1060" y1="120" x2="1060" y2="760"/>
+  </g>
+
+  <!-- Activation boxes -->
+  <g fill="#1E293B" stroke="#3B82F6" stroke-width="1">
+    <rect x="366" y="185" width="8" height="475"/>
+    <rect x="596" y="215" width="8" height="415"/>
+    <rect x="826" y="245" width="8" height="350"/>
+  </g>
+
+  <!-- M1: Client self (401) -->
+  <path d="M140,148 L195,148 L195,166 L140,166" stroke="#F59E0B" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="210" y="153" fill="#FDE68A" font-size="11" font-weight="600">① 检测到 401（Access Token 已过期）</text>
+  <text x="210" y="167" fill="#9CA3AF" font-size="10">用 refreshToken 调用刷新接口</text>
+
+  <!-- M2: Client → AuthController -->
+  <line x1="144" y1="190" x2="366" y2="190" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="255" y="183" text-anchor="middle" fill="#E8ECF4" font-size="11">② POST /auth/refresh-token {accessToken, refreshToken}</text>
+
+  <!-- M3: AuthController → AuthService -->
+  <line x1="374" y1="220" x2="596" y2="220" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="485" y="213" text-anchor="middle" fill="#E8ECF4" font-size="11">③ RefreshTokenAsync(dto)</text>
+
+  <!-- M4: AuthService → JwtService -->
+  <line x1="604" y1="250" x2="826" y2="250" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="715" y="243" text-anchor="middle" fill="#E8ECF4" font-size="11">④ RefreshTokenAsync(accessToken, refreshToken)</text>
+
+  <!-- M5: JwtService self (parse expired token) -->
+  <path d="M834,278 L890,278 L890,298 L834,298" stroke="#5A6788" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="905" y="283" fill="#E8ECF4" font-size="11">⑤ GetPrincipalFromExpiredToken(accessToken)</text>
+  <text x="905" y="297" fill="#9CA3AF" font-size="10">ValidateLifetime=false · 校验签名与 HS256 算法</text>
+
+  <!-- M6: JwtService self (extract userId) -->
+  <path d="M834,315 L890,315 L890,335 L834,335" stroke="#5A6788" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="905" y="320" fill="#E8ECF4" font-size="11">⑥ principal.FindFirst(Sub) → userId</text>
+  <text x="905" y="334" fill="#9CA3AF" font-size="10">int.TryParse · userId &gt; 0</text>
+
+  <!-- M7: JwtService → DB -->
+  <line x1="834" y1="355" x2="1056" y2="355" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="945" y="348" text-anchor="middle" fill="#E8ECF4" font-size="11">⑦ GetByIdAsync(userId)</text>
+
+  <!-- M8: DB → JwtService (return) -->
+  <line x1="1056" y1="380" x2="834" y2="380" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="945" y="373" text-anchor="middle" fill="#A7F3D0" font-size="11">user</text>
+
+  <!-- M9: JwtService self-validate (3 conditions) -->
+  <path d="M834,405 L890,405 L890,445 L834,445" stroke="#F59E0B" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="905" y="412" fill="#FDE68A" font-size="11" font-weight="600">⑧ 三重校验</text>
+  <text x="905" y="426" fill="#FDE68A" font-size="10">user != null &amp;&amp; user.RefreshToken == refreshToken</text>
+  <text x="905" y="440" fill="#FDE68A" font-size="10">&amp;&amp; RefreshTokenExpiryTime &gt;= UtcNow</text>
+
+  <!-- M10: JwtService self (generate new access) -->
+  <path d="M834,470 L890,470 L890,490 L834,490" stroke="#10B981" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="905" y="475" fill="#A7F3D0" font-size="11" font-weight="600">⑨ GenerateAccessTokenAsync(user)</text>
+  <text x="905" y="489" fill="#9CA3AF" font-size="10">→ newAccessToken（30min）</text>
+
+  <!-- M11: JwtService self (generate new refresh) -->
+  <path d="M834,505 L890,505 L890,525 L834,525" stroke="#10B981" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="905" y="510" fill="#A7F3D0" font-size="11" font-weight="600">⑩ GenerateRefreshToken()</text>
+  <text x="905" y="524" fill="#9CA3AF" font-size="10">CSPRNG 32B Base64 → newRefreshToken</text>
+
+  <!-- M12: JwtService → DB (persist new tokens) -->
+  <line x1="834" y1="555" x2="1056" y2="555" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="945" y="548" text-anchor="middle" fill="#E8ECF4" font-size="11">⑪ Update(RefreshToken, ExpiryTime) + SaveChangesAsync</text>
+
+  <!-- M13: DB → JwtService (return) -->
+  <line x1="1056" y1="580" x2="834" y2="580" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="945" y="573" text-anchor="middle" fill="#A7F3D0" font-size="11">ok</text>
+
+  <!-- Rotation highlight box -->
+  <g>
+    <rect x="780" y="600" width="280" height="38" rx="6" fill="#064E3B" stroke="#10B981" stroke-dasharray="4 3"/>
+    <text x="920" y="616" text-anchor="middle" fill="#A7F3D0" font-size="11" font-weight="600">⚡ Rotation 核心：旧 RefreshToken 被覆盖</text>
+    <text x="920" y="630" text-anchor="middle" fill="#6EE7B7" font-size="10">DB 中只剩新 RT → 旧 RT 立即失效</text>
+  </g>
+
+  <!-- M14: JwtService → AuthService (return) -->
+  <line x1="826" y1="660" x2="604" y2="660" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="715" y="653" text-anchor="middle" fill="#A7F3D0" font-size="11">JwtTokenDto { newAccessToken, newRefreshToken }</text>
+
+  <!-- M15: AuthService → AuthController (return) -->
+  <line x1="596" y1="685" x2="374" y2="685" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/>
+  <text x="485" y="678" text-anchor="middle" fill="#A7F3D0" font-size="11">JwtTokenDto</text>
+
+  <!-- M16: AuthController → Client (final) -->
+  <line x1="366" y1="720" x2="144" y2="720" stroke="#10B981" stroke-width="2" marker-end="url(#arrG)"/>
+  <text x="255" y="713" text-anchor="middle" fill="#A7F3D0" font-size="11" font-weight="600">⑫ 200 OK { newAccessToken, newRefreshToken }</text>
+
+  <!-- Client self (replace tokens) -->
+  <path d="M140,738 L195,738 L195,756 L140,756" stroke="#10B981" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="210" y="743" fill="#A7F3D0" font-size="11">替换本地存储的 Access/Refresh Token</text>
+  <text x="210" y="757" fill="#9CA3AF" font-size="10">后续请求继续携带新 Access Token</text>
+
+  <!-- Failure path sidebar (right) -->
+  <g>
+    <rect x="1180" y="245" width="200" height="345" rx="6" fill="#3B0A0A" stroke="#F87171" stroke-dasharray="4 3"/>
+    <text x="1280" y="265" text-anchor="middle" fill="#FCA5A5" font-size="11" font-weight="600">失败路径（→ 401）</text>
+    <line x1="1190" y1="273" x2="1370" y2="273" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+
+    <text x="1195" y="290" fill="#FDE68A" font-size="10" font-weight="600">⑤' SecurityTokenException</text>
+    <text x="1195" y="304" fill="#9CA3AF" font-size="9">accessToken 签名无效/算法错误</text>
+    <text x="1280" y="318" text-anchor="middle" fill="#F87171" font-size="9">→ "Invalid access token"</text>
+
+    <line x1="1190" y1="328" x2="1370" y2="328" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1195" y="345" fill="#FDE68A" font-size="10" font-weight="600">⑥' Sub 缺失或 userId ≤ 0</text>
+    <text x="1280" y="359" text-anchor="middle" fill="#F87171" font-size="9">→ "Invalid access token"</text>
+
+    <line x1="1190" y1="369" x2="1370" y2="369" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1195" y="386" fill="#FDE68A" font-size="10" font-weight="600">⑦' user == null</text>
+    <text x="1280" y="400" text-anchor="middle" fill="#F87171" font-size="9">→ "User not found"</text>
+
+    <line x1="1190" y1="410" x2="1370" y2="410" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1195" y="427" fill="#FDE68A" font-size="10" font-weight="600">⑧' RefreshToken 不匹配</text>
+    <text x="1195" y="441" fill="#9CA3AF" font-size="9">DB 值 ≠ 请求值（可能被盗用）</text>
+    <text x="1280" y="455" text-anchor="middle" fill="#F87171" font-size="9">→ "Invalid refresh token"</text>
+
+    <line x1="1190" y1="465" x2="1370" y2="465" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1195" y="482" fill="#FDE68A" font-size="10" font-weight="600">⑧'' RefreshTokenExpiryTime</text>
+    <text x="1195" y="496" fill="#9CA3AF" font-size="9">&lt; DateTime.UtcNow（已过期）</text>
+    <text x="1280" y="510" text-anchor="middle" fill="#F87171" font-size="9">→ "Refresh token expired"</text>
+
+    <line x1="1190" y1="520" x2="1370" y2="520" stroke="#F87171" stroke-width="0.5" stroke-dasharray="2 2"/>
+    <text x="1195" y="540" fill="#FCA5A5" font-size="10" font-weight="600">所有失败均抛</text>
+    <text x="1195" y="554" fill="#FCA5A5" font-size="10" font-weight="600">UnauthorizedAccessException</text>
+    <text x="1195" y="572" fill="#9CA3AF" font-size="9">前端检测到 401 → 跳登录页</text>
+  </g>
+
+  <!-- Legend -->
+  <g>
+    <rect x="40" y="780" width="1320" height="38" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="60" y="802" fill="#6B7280" font-size="11">图例：</text>
+    <line x1="105" y1="798" x2="135" y2="798" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/><text x="143" y="802" fill="#C8D0E0" font-size="11">同步调用</text>
+    <line x1="220" y1="798" x2="250" y2="798" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrG)"/><text x="258" y="802" fill="#C8D0E0" font-size="11">返回</text>
+    <line x1="305" y1="798" x2="335" y2="798" stroke="#5A6788" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/><text x="343" y="802" fill="#C8D0E0" font-size="11">跨边界/DB</text>
+    <rect x="425" y="793" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/><text x="445" y="802" fill="#C8D0E0" font-size="11">服务层</text>
+    <text x="510" y="802" fill="#9CA3AF" font-size="11">设计要点：每次刷新都换发新 RefreshToken 并覆盖 DB 中旧值；旧 RT 即使被偷也只能用一次；CSPRNG 32 字节随机数保证不可预测</text>
+  </g>
 </svg>

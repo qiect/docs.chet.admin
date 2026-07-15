@@ -1,7 +1,168 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A1A45"/>
+      <stop offset="1" stop-color="#1E1230"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#06281F"/>
+      <stop offset="1" stop-color="#031A14"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A33"/>
+      <stop offset="1" stop-color="#08191F"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="720" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="718" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">notification-architecture</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="36" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">通知公告架构 · Notification Architecture</text>
+  <text x="550" y="56" text-anchor="middle" fill="#4A5366" font-size="12">Chet.Admin · 双表设计 + 全局懒加载 + 批量回填避免 N+1</text>
+
+  <!-- Frontend band -->
+  <rect x="40" y="74" width="1020" height="58" rx="8" fill="#0E1525" stroke="#1F2A44"/>
+  <text x="52" y="92" fill="#5A6788" font-size="11">① Frontend · 前端入口</text>
+  <g font-size="11" fill="#C7D0E0">
+    <rect x="60" y="100" width="220" height="26" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="170" y="117" text-anchor="middle">🔔 notification-bell.vue</text>
+    <text x="290" y="117" fill="#7C8AA5" font-size="10">30s 轮询 unread-count · Badge 红点</text>
+    <rect x="540" y="100" width="220" height="26" rx="4" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="650" y="117" text-anchor="middle">📋 notification/index.vue</text>
+    <text x="770" y="117" fill="#7C8AA5" font-size="10">管理列表 · 创建/删除/已读</text>
+    <line x1="280" y1="113" x2="300" y2="113" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <line x1="760" y1="113" x2="780" y2="113" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="905" y="117" fill="#4A5366" font-size="10">requestClient · /api/v1/notifications</text>
+  </g>
+
+  <!-- Controller column -->
+  <rect x="40" y="148" width="300" height="324" rx="8" fill="url(#blueGrad)" stroke="#0066FF" stroke-width="1.5"/>
+  <text x="56" y="170" fill="#93C5FD" font-size="13" font-weight="600">② NotificationsController</text>
+  <text x="56" y="186" fill="#5A6788" font-size="10">[Authorize] · 7 endpoints</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <text x="56" y="210" fill="#60A5FA">[HttpPost] /</text>
+    <text x="200" y="210" fill="#7C8AA5">创建通知</text>
+    <text x="56" y="232" fill="#60A5FA">[HttpGet] /paged</text>
+    <text x="200" y="232" fill="#7C8AA5">分页(管理)</text>
+    <text x="56" y="254" fill="#60A5FA">[HttpGet] /my</text>
+    <text x="200" y="254" fill="#7C8AA5">我的通知</text>
+    <text x="56" y="276" fill="#60A5FA">[HttpGet] /unread-count</text>
+    <text x="200" y="276" fill="#7C8AA5">未读数</text>
+    <text x="56" y="298" fill="#60A5FA">[Put] /{id}/read</text>
+    <text x="200" y="298" fill="#7C8AA5">标记已读</text>
+    <text x="56" y="320" fill="#60A5FA">[Put] /read-all</text>
+    <text x="200" y="320" fill="#7C8AA5">全部已读</text>
+    <text x="56" y="342" fill="#60A5FA">[Delete] /{id}</text>
+    <text x="200" y="342" fill="#7C8AA5">删除通知</text>
+  </g>
+  <line x1="56" y1="356" x2="324" y2="356" stroke="#1F2A44"/>
+  <text x="56" y="374" fill="#5A6788" font-size="10">GetUserId() — JWT Claim</text>
+  <text x="56" y="392" fill="#5A6788" font-size="10">NameIdentifier / Sub</text>
+  <text x="56" y="418" fill="#4A5366" font-size="9.5">创建/删除需权限；查看自己通知</text>
+  <text x="56" y="432" fill="#4A5366" font-size="9.5">与标记已读对所有登录用户开放</text>
+
+  <!-- Service column -->
+  <rect x="370" y="148" width="320" height="324" rx="8" fill="url(#purpleGrad)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="386" y="170" fill="#DDD6FE" font-size="13" font-weight="600">③ NotificationService</text>
+  <text x="386" y="186" fill="#7C6FB0" font-size="10">INotificationService · 业务逻辑</text>
+  <g font-size="10.5" fill="#E9D5FF">
+    <text x="386" y="210">CreateNotificationAsync</text>
+    <text x="386" y="225" fill="#A78BFA" font-size="9.5">  全局→不写接收者；个人→批量插入</text>
+    <text x="386" y="246">GetMyNotificationsAsync</text>
+    <text x="386" y="261" fill="#A78BFA" font-size="9.5">  IsGlobal OR 存在 Recipient 记录</text>
+    <text x="386" y="282">GetUnreadCountAsync</text>
+    <text x="386" y="297" fill="#A78BFA" font-size="9.5">  globalUnread + personalUnread</text>
+    <text x="386" y="318">MarkAsReadAsync / MarkAllAsReadAsync</text>
+    <text x="386" y="333" fill="#A78BFA" font-size="9.5">  全局懒加载创建已读 · Except 补建</text>
+    <text x="386" y="354">DeleteNotificationAsync</text>
+    <text x="386" y="369" fill="#A78BFA" font-size="9.5">  先删子表 Recipients，再删主表</text>
+  </g>
+  <rect x="386" y="382" width="288" height="78" rx="5" fill="#1E1230" stroke="#F59E0B" stroke-width="1"/>
+  <text x="396" y="400" fill="#FCD34D" font-size="10.5" font-weight="600">⚠ 避免 N+1 · SenderName 回填</text>
+  <text x="396" y="416" fill="#E9D5FF" font-size="9.5">1. Distinct() 收集 SenderId 去重</text>
+  <text x="396" y="430" fill="#E9D5FF" font-size="9.5">2. Users.Where(Contains).ToDictionary</text>
+  <text x="396" y="444" fill="#E9D5FF" font-size="9.5">3. O(1) 字典找回填 → 20 条=1 次查询</text>
+
+  <!-- Data column (dual table) -->
+  <rect x="720" y="148" width="340" height="324" rx="8" fill="url(#greenGrad)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="736" y="170" fill="#6EE7B7" font-size="13" font-weight="600">④ Data Layer · 双表设计</text>
+  <text x="736" y="186" fill="#5C8C7A" font-size="10">AppDbContext · Notifications / NotificationRecipients</text>
+
+  <rect x="736" y="200" width="308" height="120" rx="5" fill="#031A14" stroke="#10B981"/>
+  <text x="746" y="218" fill="#6EE7B7" font-size="11" font-weight="600">NotificationEntity (主表)</text>
+  <g font-size="9.5" fill="#A7F3D0">
+    <text x="746" y="234">Id · Title · Content</text>
+    <text x="746" y="248">Type (Announcement/Notification/Todo)</text>
+    <text x="746" y="262">Priority (Low/Normal/High/Urgent)</text>
+    <text x="746" y="276">SenderId? (null=系统) · IsGlobal</text>
+    <text x="746" y="290">CreatedAt (UTC)</text>
+  </g>
+  <text x="746" y="310" fill="#5C8C7A" font-size="9">通知本身信息 · IsGlobal 决定下发方式</text>
+
+  <line x1="890" y1="320" x2="890" y2="342" stroke="#10B981" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="900" y="335" fill="#6EE7B7" font-size="9.5">1 : N</text>
+
+  <rect x="736" y="346" width="308" height="116" rx="5" fill="#031A14" stroke="#10B981"/>
+  <text x="746" y="364" fill="#6EE7B7" font-size="11" font-weight="600">NotificationRecipientEntity (接收者)</text>
+  <g font-size="9.5" fill="#A7F3D0">
+    <text x="746" y="380">Id · NotificationId · UserId</text>
+    <text x="746" y="394">IsRead · ReadAt?</text>
+  </g>
+  <text x="746" y="416" fill="#5C8C7A" font-size="9">追踪每用户对每通知的已读状态</text>
+  <text x="746" y="432" fill="#5C8C7A" font-size="9">全局通知：阅读时才创建（懒加载）</text>
+  <text x="746" y="448" fill="#5C8C7A" font-size="9">个人通知：创建时批量写入</text>
+
+  <!-- Arrows between columns -->
+  <line x1="340" y1="290" x2="368" y2="290" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="690" y1="290" x2="718" y2="290" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Global vs Personal comparison -->
+  <text x="52" y="494" fill="#5A6788" font-size="11">⑤ 全局公告 vs 个人通知 · 逻辑对比</text>
+
+  <rect x="40" y="504" width="500" height="156" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="56" y="526" fill="#67E8F9" font-size="12" font-weight="600">全局公告 · IsGlobal = true</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <text x="56" y="550">▸ 创建时：不预建接收者记录（省 N 条存储）</text>
+    <text x="56" y="572">▸ 可见性：所有登录用户可见</text>
+    <text x="56" y="594">▸ 标记已读：首次阅读懒加载创建 Recipient</text>
+    <text x="56" y="616" fill="#67E8F9">▸ 未读判断：无已读 Recipient 记录 = 未读</text>
+    <text x="56" y="638">▸ 全部已读：Except 找差集，补建缺失记录</text>
+  </g>
+
+  <rect x="560" y="504" width="500" height="156" rx="8" fill="url(#cyanGrad)" stroke="#06B6D4" stroke-width="1.5"/>
+  <text x="576" y="526" fill="#67E8F9" font-size="12" font-weight="600">个人通知 · IsGlobal = false</text>
+  <g font-size="10.5" fill="#C7D0E0">
+    <text x="576" y="550">▸ 创建时：批量插入 RecipientUserIds (IsRead=false)</text>
+    <text x="576" y="572">▸ 可见性：仅指定接收者可见</text>
+    <text x="576" y="594">▸ 标记已读：更新 Recipient.IsRead = true</text>
+    <text x="576" y="616" fill="#67E8F9">▸ 未读判断：Recipient.IsRead = false 计数</text>
+    <text x="576" y="638">▸ 全部已读：直接更新该用户所有未读记录</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="40" y="676" width="1020" height="32" rx="6" fill="#161C2B" stroke="#2A3550"/>
+  <g font-size="10.5" fill="#9AA6BF">
+    <rect x="54" y="686" width="12" height="12" fill="url(#blueGrad)" stroke="#0066FF"/>
+    <text x="72" y="696">Controller</text>
+    <rect x="146" y="686" width="12" height="12" fill="url(#purpleGrad)" stroke="#8B5CF6"/>
+    <text x="164" y="696">Service</text>
+    <rect x="226" y="686" width="12" height="12" fill="url(#greenGrad)" stroke="#10B981"/>
+    <text x="244" y="696">Data/DB</text>
+    <rect x="316" y="686" width="12" height="12" fill="url(#cyanGrad)" stroke="#06B6D4"/>
+    <text x="334" y="696">Frontend/逻辑</text>
+    <line x1="420" y1="692" x2="444" y2="692" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="450" y="696">调用</text>
+    <text x="500" y="696" fill="#5A6788">主表存通知 + 接收者表追踪已读；全局懒加载省存储；批量回填 SenderName 避免 N+1</text>
+  </g>
 </svg>

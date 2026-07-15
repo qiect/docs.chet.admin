@@ -114,7 +114,7 @@ dotnet run --project Chet.Admin.Api
 - **根路径**：http://localhost:5000/（会自动重定向到 Swagger）
 
 <!-- 后端Swagger界面截图 -->
-![Swagger 界面](/screenshots/swagger.svg)
+![Swagger 界面](/screenshots/SwaggerUI.jpeg)
 
 ### 后端启动配置说明
 

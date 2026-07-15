@@ -1,7 +1,145 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="proc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+    <clipPath id="logClip">
+      <rect x="60" y="240" width="980" height="385" rx="10"/>
+    </clipPath>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="650" fill="#11151F"/>
+  <!-- Outer dashed border -->
+  <rect x="1" y="1" width="1098" height="648" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+  <!-- Corner dot -->
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">deploy-success</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <!-- Title -->
+  <text x="550" y="44" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">部署完成</text>
+  <text x="550" y="64" text-anchor="middle" fill="#4A5366" font-size="12">Docker + Nginx 一键部署 · deploy.sh 全流程通过</text>
+
+  <!-- Pipeline stage 1 -->
+  <rect x="45" y="92" width="170" height="100" rx="8" fill="url(#proc)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="58" y="112" fill="#10B981" font-size="10">01</text>
+  <circle cx="200" cy="108" r="10" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="200" y="112" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">✓</text>
+  <text x="130" y="146" text-anchor="middle" fill="#E8ECF4" font-size="14" font-weight="600">构建前端</text>
+  <text x="130" y="168" text-anchor="middle" fill="#9CA3AF" font-size="11">pnpm build:antd</text>
+
+  <!-- arrow 1 -->
+  <line x1="215" y1="142" x2="251" y2="142" stroke="#10B981" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Pipeline stage 2 -->
+  <rect x="255" y="92" width="170" height="100" rx="8" fill="url(#proc)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="268" y="112" fill="#10B981" font-size="10">02</text>
+  <circle cx="410" cy="108" r="10" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="410" y="112" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">✓</text>
+  <text x="340" y="146" text-anchor="middle" fill="#E8ECF4" font-size="14" font-weight="600">部署静态文件</text>
+  <text x="340" y="168" text-anchor="middle" fill="#9CA3AF" font-size="11">cp → nginx/html</text>
+
+  <line x1="425" y1="142" x2="461" y2="142" stroke="#10B981" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Pipeline stage 3 -->
+  <rect x="465" y="92" width="170" height="100" rx="8" fill="url(#proc)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="478" y="112" fill="#10B981" font-size="10">03</text>
+  <circle cx="620" cy="108" r="10" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="620" y="112" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">✓</text>
+  <text x="550" y="146" text-anchor="middle" fill="#E8ECF4" font-size="14" font-weight="600">构建镜像</text>
+  <text x="550" y="168" text-anchor="middle" fill="#9CA3AF" font-size="11">docker build</text>
+
+  <line x1="635" y1="142" x2="671" y2="142" stroke="#10B981" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Pipeline stage 4 -->
+  <rect x="675" y="92" width="170" height="100" rx="8" fill="url(#proc)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="688" y="112" fill="#10B981" font-size="10">04</text>
+  <circle cx="830" cy="108" r="10" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="830" y="112" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">✓</text>
+  <text x="760" y="146" text-anchor="middle" fill="#E8ECF4" font-size="14" font-weight="600">启动容器</text>
+  <text x="760" y="168" text-anchor="middle" fill="#9CA3AF" font-size="11">compose up -d</text>
+
+  <line x1="845" y1="142" x2="881" y2="142" stroke="#10B981" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Pipeline stage 5 -->
+  <rect x="885" y="92" width="170" height="100" rx="8" fill="url(#proc)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="898" y="112" fill="#10B981" font-size="10">05</text>
+  <circle cx="1040" cy="108" r="10" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="1040" y="112" text-anchor="middle" fill="#10B981" font-size="11" font-weight="700">✓</text>
+  <text x="970" y="146" text-anchor="middle" fill="#E8ECF4" font-size="14" font-weight="600">健康检查</text>
+  <text x="970" y="168" text-anchor="middle" fill="#9CA3AF" font-size="11">/api/v1/health</text>
+
+  <!-- down indicator -->
+  <text x="550" y="222" text-anchor="middle" fill="#10B981" font-size="16">↓ 全部通过</text>
+
+  <!-- Success terminal -->
+  <g clip-path="url(#logClip)">
+    <rect x="60" y="240" width="980" height="385" fill="#0D1117"/>
+    <rect x="60" y="240" width="980" height="34" fill="#161B22"/>
+  </g>
+  <rect x="60" y="240" width="980" height="385" rx="10" fill="none" stroke="#10B981" stroke-width="1.5"/>
+  <line x1="60" y1="274" x2="1040" y2="274" stroke="#10B981" stroke-width="1" opacity="0.4"/>
+  <circle cx="80" cy="257" r="5.5" fill="#FF5F56"/>
+  <circle cx="98" cy="257" r="5.5" fill="#FFBD2E"/>
+  <circle cx="116" cy="257" r="5.5" fill="#27C93F"/>
+  <text x="550" y="261" text-anchor="middle" fill="#6B7280" font-size="12">deploy.sh — 部署日志</text>
+
+  <!-- Terminal content -->
+  <text x="80" y="306" fill="#10B981" font-size="16" font-weight="700">✓ 部署完成！</text>
+
+  <text y="338" font-size="13">
+    <tspan x="80" fill="#6B7280">$</tspan>
+    <tspan x="94" fill="#E8ECF4">docker compose ps</tspan>
+  </text>
+  <text x="80" y="360" fill="#4A5366" font-size="12">NAME              STATUS              PORTS</text>
+  <text y="382" font-size="12">
+    <tspan x="80" fill="#E8ECF4">chet-webapi</tspan>
+    <tspan x="240" fill="#10B981">Up (healthy)</tspan>
+    <tspan x="400" fill="#9CA3AF">0.0.0.0:8080-&gt;8080/tcp</tspan>
+  </text>
+  <text y="404" font-size="12">
+    <tspan x="80" fill="#E8ECF4">chet-redis</tspan>
+    <tspan x="240" fill="#10B981">Up (healthy)</tspan>
+    <tspan x="400" fill="#9CA3AF">0.0.0.0:6379-&gt;6379/tcp</tspan>
+  </text>
+
+  <text y="436" font-size="13">
+    <tspan x="80" fill="#6B7280">$</tspan>
+    <tspan x="94" fill="#E8ECF4">curl http://localhost:8080/api/v1/health</tspan>
+  </text>
+  <text y="458" font-size="13">
+    <tspan x="80" fill="#10B981">✓</tspan>
+    <tspan x="100" fill="#4ADE80">HTTP/1.1 200 OK · Application started successfully</tspan>
+  </text>
+
+  <text x="76" y="488" fill="#4A5366" font-size="12">── 部署产物 ──</text>
+  <text y="512" font-size="12">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#6B7280">image</tspan>
+    <tspan x="180" fill="#9CA3AF">chet-admin-api:latest</tspan>
+  </text>
+  <text y="534" font-size="12">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#6B7280">api</tspan>
+    <tspan x="180" fill="#9CA3AF">container chet-webapi</tspan>
+    <tspan x="380" fill="#6B7280">→</tspan>
+    <tspan x="400" fill="#9CA3AF">:8080</tspan>
+  </text>
+  <text y="556" font-size="12">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#6B7280">redis</tspan>
+    <tspan x="180" fill="#9CA3AF">container chet-redis</tspan>
+    <tspan x="380" fill="#6B7280">→</tspan>
+    <tspan x="400" fill="#9CA3AF">:6379 (可选)</tspan>
+  </text>
+  <text y="578" font-size="12">
+    <tspan x="80" fill="#22D3EE">▸</tspan>
+    <tspan x="100" fill="#6B7280">nginx</tspan>
+    <tspan x="180" fill="#9CA3AF">443 → /api (proxy) · / (static)</tspan>
+  </text>
+
+  <text x="80" y="612" fill="#10B981" font-size="14" font-weight="700">✓ 健康检查通过，部署成功</text>
 </svg>

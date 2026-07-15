@@ -1,7 +1,160 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
-  <rect width="800" height="500" fill="#11151F"/>
-  <rect x="1" y="1" width="798" height="498" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6788"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#10B981"/>
+    </marker>
+    <linearGradient id="pBox" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A2033"/>
+      <stop offset="1" stop-color="#141A28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="600" fill="#11151F"/>
+  <rect x="1" y="1" width="1098" height="598" fill="none" stroke="#0066FF" stroke-width="2" stroke-dasharray="6 4"/>
   <circle cx="24" cy="24" r="5" fill="#3B82F6"/>
-  <text x="400" y="245" text-anchor="middle" fill="#E8ECF4" font-family="monospace" font-size="24" font-weight="500">user-paged</text>
-  <text x="400" y="280" text-anchor="middle" fill="#4A5366" font-family="monospace" font-size="13">Chet.Admin · 示意图</text>
+
+  <text x="550" y="32" text-anchor="middle" fill="#E8ECF4" font-size="20" font-weight="600">用户分页查询流程</text>
+  <text x="550" y="50" text-anchor="middle" fill="#4A5366" font-size="12">UsersController.GetPagedUsers · 数据权限自动过滤 · Skip / Take 分页</text>
+
+  <!-- Start -->
+  <rect x="380" y="70" width="340" height="32" rx="16" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="91" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">请求 · GET /api/v1/users/paged?pageNumber=1&amp;pageSize=20&amp;keyword=</text>
+  <line x1="550" y1="102" x2="550" y2="118" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- Controller -->
+  <rect x="380" y="118" width="340" height="42" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="137" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">UsersController.GetPagedUsers</text>
+  <text x="550" y="153" text-anchor="middle" fill="#9CA3AF" font-size="11">currentUserId ← JWT.Sub Claim · new PagedRequest(...)</text>
+  <line x1="550" y1="160" x2="550" y2="176" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Service -->
+  <rect x="380" y="176" width="340" height="42" rx="6" fill="#2A1A45" stroke="#8B5CF6"/>
+  <text x="550" y="195" text-anchor="middle" fill="#DDD6FE" font-size="12" font-weight="600">UserService.GetPagedUsersAsync(req, currentUserId)</text>
+  <text x="550" y="211" text-anchor="middle" fill="#C4B5FD" font-size="11">_dataScopeService.GetDataScopeAsync(userId)</text>
+  <line x1="550" y1="218" x2="550" y2="234" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Keyword filter side note -->
+  <g>
+    <rect x="740" y="176" width="320" height="56" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="758" y="195" fill="#9CA3AF" font-size="11" font-weight="600">关键字过滤 · 适用所有分支</text>
+    <text x="758" y="211" fill="#C8D0E0" font-size="10">if keyword != null:</text>
+    <text x="758" y="225" fill="#93C5FD" font-size="10">.Where(u =&gt; u.Name.Contains(kw) || u.Email.Contains(kw))</text>
+  </g>
+  <line x1="720" y1="197" x2="740" y2="197" stroke="#5A6788" stroke-width="1.2" stroke-dasharray="3 3"/>
+
+  <!-- Decision diamond -->
+  <polygon points="550,234 660,270 550,306 440,270" fill="#3B2A0A" stroke="#F59E0B"/>
+  <text x="550" y="266" text-anchor="middle" fill="#FDE68A" font-size="13" font-weight="700">dataScope = ?</text>
+  <text x="550" y="282" text-anchor="middle" fill="#9CA3AF" font-size="10">switch 分支</text>
+
+  <!-- Fan-out arrows -->
+  <g stroke-width="1.5" fill="none">
+    <path d="M550,306 C550,314 134,314 134,320" stroke="#10B981" marker-end="url(#arrG)"/>
+    <path d="M550,306 C550,314 342,314 342,320" stroke="#F59E0B" marker-end="url(#arr)"/>
+    <line x1="550" y1="306" x2="550" y2="320" stroke="#06B6D4" marker-end="url(#arr)"/>
+    <path d="M550,306 C550,314 758,314 758,320" stroke="#3B82F6" marker-end="url(#arr)"/>
+    <path d="M550,306 C550,314 966,314 966,320" stroke="#8B5CF6" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- Lane: All -->
+  <g>
+    <rect x="39" y="320" width="190" height="80" rx="8" fill="#06281F" stroke="#10B981"/>
+    <rect x="39" y="320" width="190" height="22" rx="8" fill="#065F46"/>
+    <rect x="39" y="336" width="190" height="6" fill="#065F46"/>
+    <text x="134" y="335" text-anchor="middle" fill="#D1FAE5" font-size="11" font-weight="700">All · 全部数据</text>
+    <text x="134" y="360" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="600">不加 WHERE</text>
+    <text x="134" y="376" text-anchor="middle" fill="#9CA3AF" font-size="9">回退无过滤查询</text>
+    <text x="134" y="392" text-anchor="middle" fill="#6B7280" font-size="9">总经理视角</text>
+  </g>
+
+  <!-- Lane: Self -->
+  <g>
+    <rect x="247" y="320" width="190" height="80" rx="8" fill="#3B2A0A" stroke="#F59E0B"/>
+    <rect x="247" y="320" width="190" height="22" rx="8" fill="#B45309"/>
+    <rect x="247" y="336" width="190" height="6" fill="#B45309"/>
+    <text x="342" y="335" text-anchor="middle" fill="#FEF3C7" font-size="11" font-weight="700">Self · 仅本人</text>
+    <text x="342" y="360" text-anchor="middle" fill="#FCD34D" font-size="10" font-weight="600">WHERE u.Id =</text>
+    <text x="342" y="374" text-anchor="middle" fill="#FCD34D" font-size="10">  currentUserId</text>
+    <text x="342" y="392" text-anchor="middle" fill="#9CA3AF" font-size="9">普通员工视角</text>
+  </g>
+
+  <!-- Lane: Dept -->
+  <g>
+    <rect x="455" y="320" width="190" height="80" rx="8" fill="#082F33" stroke="#06B6D4"/>
+    <rect x="455" y="320" width="190" height="22" rx="8" fill="#155E75"/>
+    <rect x="455" y="336" width="190" height="6" fill="#155E75"/>
+    <text x="550" y="335" text-anchor="middle" fill="#CFFAFE" font-size="11" font-weight="700">Dept · 本部门</text>
+    <text x="550" y="360" text-anchor="middle" fill="#67E8F9" font-size="10" font-weight="600">WHERE u.DeptId =</text>
+    <text x="550" y="374" text-anchor="middle" fill="#67E8F9" font-size="10">  currentUserDept</text>
+    <text x="550" y="392" text-anchor="middle" fill="#9CA3AF" font-size="9">部门经理视角</text>
+  </g>
+
+  <!-- Lane: DeptAndChild -->
+  <g>
+    <rect x="663" y="320" width="190" height="80" rx="8" fill="#0B1A3A" stroke="#3B82F6"/>
+    <rect x="663" y="320" width="190" height="22" rx="8" fill="#1E40AF"/>
+    <rect x="663" y="336" width="190" height="6" fill="#1E40AF"/>
+    <text x="758" y="335" text-anchor="middle" fill="#DBEAFE" font-size="11" font-weight="700">DeptAndChild</text>
+    <text x="758" y="360" text-anchor="middle" fill="#93C5FD" font-size="10" font-weight="600">WHERE u.DeptId IN</text>
+    <text x="758" y="374" text-anchor="middle" fill="#93C5FD" font-size="10"> (递归子部门)</text>
+    <text x="758" y="392" text-anchor="middle" fill="#60A5FA" font-size="9">GetAccessibleDeptIdsAsync</text>
+  </g>
+
+  <!-- Lane: Custom -->
+  <g>
+    <rect x="871" y="320" width="190" height="80" rx="8" fill="#221043" stroke="#8B5CF6"/>
+    <rect x="871" y="320" width="190" height="22" rx="8" fill="#5B21B6"/>
+    <rect x="871" y="336" width="190" height="6" fill="#5B21B6"/>
+    <text x="966" y="335" text-anchor="middle" fill="#EDE9FE" font-size="11" font-weight="700">Custom · 自定义</text>
+    <text x="966" y="360" text-anchor="middle" fill="#C4B5FD" font-size="10" font-weight="600">WHERE u.DeptId IN</text>
+    <text x="966" y="374" text-anchor="middle" fill="#C4B5FD" font-size="10"> (自定义部门)</text>
+    <text x="966" y="392" text-anchor="middle" fill="#A78BFA" font-size="9">+ RoleDataScopeDepts</text>
+  </g>
+
+  <!-- Fan-in arrows -->
+  <g stroke="#5A6788" stroke-width="1.5" fill="none">
+    <path d="M134,400 C134,410 550,410 550,420" marker-end="url(#arr)"/>
+    <path d="M342,400 C342,410 550,410 550,420" marker-end="url(#arr)"/>
+    <line x1="550" y1="400" x2="550" y2="420" marker-end="url(#arr)"/>
+    <path d="M758,400 C758,410 550,410 550,420" marker-end="url(#arr)"/>
+    <path d="M966,400 C966,410 550,410 550,420" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- Repository / DB -->
+  <rect x="320" y="420" width="460" height="42" rx="6" fill="#06281F" stroke="#10B981"/>
+  <text x="550" y="438" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">Repository · dbContext.Users.AsNoTracking()</text>
+  <text x="550" y="454" text-anchor="middle" fill="#6EE7B7" font-size="10">.Include(UserRoles).ThenInclude(Role) · CountAsync · Skip/Take · ToListAsync</text>
+  <line x1="550" y1="462" x2="550" y2="478" stroke="#5A6788" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- DTO mapping -->
+  <rect x="320" y="478" width="460" height="36" rx="6" fill="url(#pBox)" stroke="#0066FF"/>
+  <text x="550" y="494" text-anchor="middle" fill="#E8ECF4" font-size="12" font-weight="600">IMapper.Map&lt;List&lt;UserDto&gt;&gt;(items)</text>
+  <text x="550" y="508" text-anchor="middle" fill="#9CA3AF" font-size="10">剔除 PasswordHash / RefreshToken / LoginFailCount 等敏感字段</text>
+  <line x1="550" y1="514" x2="550" y2="526" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- End -->
+  <rect x="320" y="526" width="460" height="32" rx="16" fill="#064E3B" stroke="#10B981"/>
+  <text x="550" y="547" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="600">200 OK · PagedResult&lt;UserDto&gt; { Items, Metadata }</text>
+
+  <!-- Legend -->
+  <g>
+    <rect x="40" y="566" width="1020" height="28" rx="6" fill="#161C2B" stroke="#2A3550"/>
+    <text x="58" y="585" fill="#6B7280" font-size="11">图例</text>
+    <rect x="92" y="577" width="14" height="10" rx="2" fill="#064E3B" stroke="#10B981"/>
+    <text x="112" y="586" fill="#C8D0E0" font-size="11">起止</text>
+    <rect x="152" y="577" width="14" height="10" rx="2" fill="url(#pBox)" stroke="#0066FF"/>
+    <text x="172" y="586" fill="#C8D0E0" font-size="11">控制器/流程</text>
+    <rect x="258" y="577" width="14" height="10" rx="2" fill="#2A1A45" stroke="#8B5CF6"/>
+    <text x="278" y="586" fill="#C8D0E0" font-size="11">服务层</text>
+    <rect x="330" y="577" width="14" height="10" rx="2" fill="#06281F" stroke="#10B981"/>
+    <text x="350" y="586" fill="#C8D0E0" font-size="11">仓储/DB</text>
+    <polygon points="424,582 432,578 440,582 432,586" fill="#3B2A0A" stroke="#F59E0B"/>
+    <text x="446" y="586" fill="#C8D0E0" font-size="11">决策</text>
+    <text x="490" y="586" fill="#10B981" font-size="11">→ 通过</text>
+    <text x="556" y="586" fill="#5A6788" font-size="11">→ 流转</text>
+    <text x="622" y="586" fill="#9CA3AF" font-size="11">关键设计：Controller 传 currentUserId，Service 拼 WHERE，可测试可追溯</text>
+  </g>
 </svg>
